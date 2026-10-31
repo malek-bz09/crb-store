@@ -190,6 +190,9 @@ def test_delete(client, make_product):
     product = make_product()
     assert client.delete(f"{URL}/{product['id']}").status_code == 204
     assert client.get(f"{URL}/{product['id']}").status_code == 404
+    # Gone from the admin list and can't be edited, though the row is kept for old orders
+    assert product["id"] not in [p["id"] for p in client.get(ADMIN_URL).json()["items"]]
+    assert client.patch(f"{URL}/{product['id']}", json={"price": 100}).status_code == 404
 
 
 # ---------- List, search, filter, pagination ----------

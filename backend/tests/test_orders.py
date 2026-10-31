@@ -2,6 +2,7 @@
 
 import re
 import threading
+import time
 from datetime import UTC, datetime
 from decimal import Decimal
 
@@ -173,8 +174,9 @@ def place_at_the_same_time(product_id: int, buyers: int) -> list[bool]:
     start = threading.Barrier(buyers)
     results = []
 
-    def buy():
-        data = OrderCreate.model_validate(checkout([(product_id, 1)]))
+    def buy(n):
+        # Each buyer has their own phone, like real separate customers
+        data = OrderCreate.model_validate(checkout([(product_id, 1)], phone=f"0555 00 00 {n:02d}"))
         with SessionLocal() as db:
             start.wait()  # everyone goes at once
             try:
@@ -183,7 +185,7 @@ def place_at_the_same_time(product_id: int, buyers: int) -> list[bool]:
             except AppError:
                 results.append(False)
 
-    threads = [threading.Thread(target=buy) for _ in range(buyers)]
+    threads = [threading.Thread(target=buy, args=(n,)) for n in range(buyers)]
     for thread in threads:
         thread.start()
     for thread in threads:
@@ -219,14 +221,47 @@ def test_same_idempotency_key_returns_the_same_order(client):
     assert order_count() == 1
 
 
+def test_same_key_waiting_on_the_lock_gets_the_existing_order():
+    # Two requests with one key: the second only looks the key up again after taking the
+    # product locks, so it finds the first order instead of failing on the stock it took
+    polo = add_product(stock=1)
+    data = OrderCreate.model_validate(checkout([(polo, 1)]))
+    with SessionLocal() as first, SessionLocal() as second:
+        service.lock_products(first, [polo])  # the first request holds the lock...
+        done = []
+        waiting = threading.Thread(target=lambda: done.append(service.place_order(second, data, "same-key-123")))
+        waiting.start()
+        time.sleep(0.5)  # give it time to reach lock_products and wait there
+        # Same transaction, so the first request can take its own locks again; committing frees them
+        order, created = service.place_order(first, data, "same-key-123")
+        waiting.join()
+        assert created and done[0][1] is False
+        assert done[0][0].order_number == order.order_number
+    assert stock_of(polo) == 0
+
+
+def test_too_many_items_in_one_order_is_refused(client):
+    polo = add_product(stock=50)
+    assert place(client, [(polo, 21)]).status_code == 422
+    assert stock_of(polo) == 50
+
+
+def test_unconfirmed_orders_per_phone_are_limited(client):
+    polo = add_product(stock=50)
+    for _ in range(3):
+        assert place(client, [(polo, 1)]).status_code == 201
+    assert place(client, [(polo, 1)]).status_code == 429
+    assert place(client, [(polo, 1)], phone="0666 11 22 33").status_code == 201
+
+
 def test_bad_idempotency_key_is_rejected(client):
     assert place(client, [(add_product(), 1)], key="x").status_code == 422
 
 
 def test_order_submissions_are_rate_limited(client):
     polo = add_product(stock=50)
-    for _ in range(10):
-        assert place(client, [(polo, 1)]).status_code == 201
+    for n in range(10):
+        assert place(client, [(polo, 1)], phone=f"0555 00 00 {n:02d}").status_code == 201
     assert place(client, [(polo, 1)]).status_code == 429
 
 
@@ -248,10 +283,12 @@ def test_order_survives_product_deletion(client, admin_client):
     assert admin_client.delete(f"/api/v1/products/{polo}").status_code == 204
     order_id = admin_client.get(ADMIN_ORDERS).json()["items"][0]["id"]
     order = admin_client.get(f"{ADMIN_ORDERS}/{order_id}").json()
-    assert order["lines"][0] | {"id": None, "slug": None, "image": None} == order["lines"][0]
-    assert order["lines"][0]["name"] == "Navy Polo"
-    # Cancelling still works; there's just no product to put the stock back on
+    line = order["lines"][0]
+    # Deleting is a soft delete: the line keeps its product and photo, but no shop link
+    assert (line["id"], line["slug"], line["image"], line["name"]) == (polo, None, "/p.jpg", "Navy Polo")
+    # Cancelling puts the stock back on the (deleted) product
     assert admin_client.patch(f"{ADMIN_ORDERS}/{order_id}/status", json={"status": "cancelled"}).status_code == 200
+    assert stock_of(polo) == 5
 
 
 # ---------- Status changes ----------
@@ -386,7 +423,10 @@ def test_filter_by_status_keeps_all_counts(admin_client, three_orders):
 
 @pytest.mark.parametrize(
     ("q", "expected"),
-    [("karim", 1), ("AMINA", 2), ("0555 11", 2), ("karim@example", 1), ("nobody", 0)],
+    [
+        ("karim", 1), ("AMINA", 2), ("0555 11", 2), ("+213 555 11", 2), ("karim@example", 1), ("nobody", 0),
+        ("ORD-55", 0),  # digits in an order number don't match phone numbers
+    ],
 )
 def test_search(admin_client, three_orders, q, expected):
     assert admin_client.get(ADMIN_ORDERS, params={"q": q}).json()["total"] == expected
@@ -446,3 +486,14 @@ def test_there_is_no_public_order_lookup(client):
     order = place(client, [(add_product(), 1)]).json()
     assert client.get(f"{ORDERS}/{order['orderNumber']}").status_code in (404, 405)
     assert client.get(ORDERS).status_code == 405
+
+
+def test_customer_search_counts_all_their_orders(admin_client, three_orders):
+    # Only Amina's newer order uses this name, but her totals cover both orders
+    with SessionLocal() as db:
+        oldest = db.scalar(select(Order).order_by(Order.created_at).limit(1))
+        oldest.customer_name = "Amina B"
+        db.commit()
+    for q in ["Amina Benali", "+213 555 111", "0555 11 11"]:
+        customers = admin_client.get("/api/v1/admin/customers", params={"q": q}).json()["items"]
+        assert [(c["fullName"], c["orderCount"]) for c in customers] == [("Amina Benali", 2)], q

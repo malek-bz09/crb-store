@@ -34,7 +34,9 @@ def create_access_token(admin_id: int, role: str) -> tuple[str, int]:
     claims = {
         "sub": str(admin_id),  # who the token belongs to ("subject")
         "role": role,
-        "iat": now,  # issued at
+        # Issued at, with fractions of a second (a plain datetime would be rounded down),
+        # so a token from just before a password change, in the same second, is refused
+        "iat": now.timestamp(),
         "exp": now + lifetime,  # expires at; jwt.decode() rejects it afterwards
     }
     token = jwt.encode(claims, settings.jwt_secret_key.get_secret_value(), algorithm=JWT_ALGORITHM)

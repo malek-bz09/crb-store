@@ -4,6 +4,7 @@ from decimal import Decimal
 from math import ceil
 from typing import Annotated
 
+from fastapi import Query
 from pydantic import BaseModel, ConfigDict, PlainSerializer
 from pydantic.alias_generators import to_camel
 
@@ -25,6 +26,11 @@ class CamelModel(BaseModel):
 Money = Annotated[Decimal, PlainSerializer(float, return_type=float, when_used="json")]
 
 
+# Query parameters shared by every paged list
+PageNumber = Annotated[int, Query(ge=1)]
+PageSize = Annotated[int, Query(ge=1, le=100)]
+
+
 class Page[T](CamelModel):
     """One page of a longer list."""
 
@@ -35,7 +41,10 @@ class Page[T](CamelModel):
     pages: int
 
 
-def page_of[T](schema: type[T], items, total: int, page: int, size: int) -> Page[T]:
-    return Page[schema].model_validate(
-        {"items": items, "total": total, "page": page, "size": size, "pages": ceil(total / size)}
+def page_of[T](
+    schema: type[T], items, total: int, page: int, size: int, *, page_type: type[Page] | None = None, **extra
+) -> Page[T]:
+    """Builds the page; page_type and extra are for pages with more fields (e.g. OrderPage)."""
+    return (page_type or Page[schema]).model_validate(
+        {"items": items, "total": total, "page": page, "size": size, "pages": ceil(total / size)} | extra
     )

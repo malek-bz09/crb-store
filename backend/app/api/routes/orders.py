@@ -7,7 +7,6 @@ anyone who merely knows (or guesses) an order number.
 
 import uuid
 from datetime import date
-from math import ceil
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, Header, Query, Response
@@ -15,7 +14,7 @@ from fastapi import APIRouter, Depends, Header, Query, Response
 from app.api.deps import DbSession, StaffOrAdmin
 from app.core.config import get_settings
 from app.core.rate_limit import RateLimiter
-from app.schemas.common import Page, page_of
+from app.schemas.common import Page, PageNumber, PageSize, page_of
 from app.schemas.order import (
     CustomerSummary,
     OrderCreate,
@@ -61,9 +60,7 @@ def place_order(
 
 admin_router = APIRouter(prefix="/admin", tags=["orders (admin)"], dependencies=[StaffOrAdmin])
 
-PageNumber = Annotated[int, Query(ge=1)]
-PageSize = Annotated[int, Query(ge=1, le=100)]
-Search = Annotated[str | None, Query(max_length=100)]
+Search = Annotated[str | None, Query(max_length=100, description="Name or phone")]
 
 
 @admin_router.get("/orders")
@@ -79,9 +76,9 @@ def list_orders(
     orders, total, status_counts = service.list_orders(
         db, page=page, size=size, status=status, q=q, date_from=date_from, date_to=date_to
     )
-    return OrderPage(
-        items=[OrderSummary.of(o) for o in orders], total=total, page=page, size=size,
-        pages=ceil(total / size), status_counts=status_counts,
+    return page_of(
+        OrderSummary, [OrderSummary.of(o) for o in orders], total, page, size,
+        page_type=OrderPage, status_counts=status_counts,
     )
 
 

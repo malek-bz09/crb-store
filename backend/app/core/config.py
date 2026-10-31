@@ -37,6 +37,12 @@ class Settings(BaseSettings):
     login_rate_limit: int = 5
     order_rate_limit: int = 10
 
+    # Placing an order reserves its stock before anyone has confirmed it by phone, so
+    # these stop fake orders from emptying the shop: at most this many items in one
+    # order, and this many unconfirmed (pending) orders per phone number
+    max_units_per_order: int = 20
+    max_pending_orders_per_phone: int = 3
+
     # Where uploaded product photos are saved
     upload_dir: Path = BACKEND_DIR / "data" / "uploads"
 

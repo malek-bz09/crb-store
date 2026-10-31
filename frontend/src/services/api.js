@@ -42,13 +42,17 @@ export async function apiFetch(path, { method = 'GET', body, token, headers: ext
 }
 
 // The backend returns long lists one page at a time ({items, pages, ...}).
-// This fetches every page and returns all the items in one array.
+// This fetches every page and returns all the items in one array: the first page
+// says how many there are, then the rest are fetched at the same time.
 export async function fetchAllPages(fetcher, path) {
   const separator = path.includes('?') ? '&' : '?'
-  const items = []
-  for (let page = 1; ; page++) {
-    const data = await fetcher(`${path}${separator}page=${page}&size=100`)
-    items.push(...data.items)
-    if (page >= data.pages) return items
-  }
+  const pageUrl = (page) => `${path}${separator}page=${page}&size=100`
+  const first = await fetcher(pageUrl(1))
+  const rest = await Promise.all(
+    Array.from({ length: first.pages - 1 }, (_, i) => fetcher(pageUrl(i + 2))),
+  )
+  // Something added or deleted between requests shifts the pages, which can repeat an item
+  const byId = new Map()
+  for (const item of [first, ...rest].flatMap((data) => data.items)) byId.set(item.id, item)
+  return [...byId.values()]
 }

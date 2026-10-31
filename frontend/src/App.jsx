@@ -4,6 +4,7 @@ import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
 import HomePage from './pages/HomePage'
 import CategoryPage from './pages/CategoryPage'
+import ShopPage from './pages/ShopPage'
 import SearchPage from './pages/SearchPage'
 import ProductPage from './pages/ProductPage'
 import CartPage from './pages/CartPage'
@@ -41,6 +42,7 @@ function App() {
       <Routes>
         <Route element={<StoreLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/shop" element={<ShopPage />} />
           <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/product/:slug" element={<ProductPage />} />

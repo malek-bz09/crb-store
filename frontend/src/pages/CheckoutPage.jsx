@@ -12,6 +12,14 @@ import './CheckoutPage.css'
 
 const EMPTY_FORM = Object.fromEntries(FIELDS.map((field) => [field, '']))
 
+// crypto.randomUUID() only exists on https:// pages and localhost; getRandomValues
+// works everywhere (e.g. testing on a phone at http://192.168.x.x)
+function newIdempotencyKey() {
+  if (crypto.randomUUID) return crypto.randomUUID()
+  const bytes = crypto.getRandomValues(new Uint8Array(16))
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')
+}
+
 function CheckoutPage() {
   const { lines, subtotal, clearCart } = useCart()
   const catalog = useProducts()
@@ -23,7 +31,7 @@ function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false)
   const [formError, setFormError] = useState(null)
   // One id per visit to this page, sent with every attempt to place this order
-  const [idempotencyKey] = useState(() => crypto.randomUUID())
+  const [idempotencyKey] = useState(newIdempotencyKey)
 
   // Items that can't be ordered as they are (sold out or over the stock limit)
   const stockIssues = lines.filter(({ quantity, product }) => quantity > product.stock)

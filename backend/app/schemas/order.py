@@ -112,7 +112,7 @@ def customer_of(order: Order) -> CustomerOut:
 
 
 class LineOut(CamelModel):
-    id: int | None  # the product's id; null if the product was deleted since
+    id: int | None  # the product's id
     name: str
     price: Money
     quantity: int

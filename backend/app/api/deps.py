@@ -53,7 +53,7 @@ def get_current_admin(
     if admin is None or not admin.is_active:
         raise unauthorized(SESSION_EXPIRED)
     # Token from before the last password change: sign out
-    if datetime.fromtimestamp(claims["iat"], UTC) < admin.password_changed_at.replace(microsecond=0):
+    if datetime.fromtimestamp(claims["iat"], UTC) < admin.password_changed_at:
         raise unauthorized(SESSION_EXPIRED)
     return admin
 

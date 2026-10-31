@@ -17,12 +17,14 @@ uv run python -m app.cli seed        # add the sample products
 uv run python -m app.cli create-admin --email you@shop.dz --name "Your Name"
 ```
 
-Then, in two terminals from the project folder (or from `frontend/`):
+Then, from the project folder:
 
 ```sh
-pnpm api                                   # 1. Backend — http://localhost:8000
-pnpm install:frontend && pnpm dev          # 2. Frontend — http://localhost:5173
+pnpm install     # first time only
+pnpm dev         # backend (http://localhost:8000) + frontend (http://localhost:5173), via Turborepo
 ```
+
+`pnpm api` or `pnpm web` starts just one of them.
 
 Vite forwards every `/api/...` request to the backend, so both must be running.
 To point it at another backend: `API_URL=http://localhost:9000 pnpm dev`.
@@ -31,10 +33,8 @@ API docs (try requests in the browser): http://localhost:8000/docs
 ## Tests
 
 ```sh
-cd backend
-uv run pytest            # needs PostgreSQL running; uses (and wipes) the shop_test database
-cd ../frontend
-pnpm lint && pnpm build
+pnpm test                # backend tests: need PostgreSQL running; use (and wipe) the shop_test database
+pnpm lint && pnpm build  # frontend
 ```
 
 ## How a sale works

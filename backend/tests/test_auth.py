@@ -112,6 +112,16 @@ def test_changing_password_signs_out_old_tokens(client, make_admin):
     assert client.get(ME, headers={"Authorization": f"Bearer {old_token}"}).status_code == 401
 
 
+def test_token_from_earlier_in_the_same_second_is_signed_out(client, make_admin):
+    make_admin()
+    changed = datetime.now(UTC).replace(microsecond=800_000) - timedelta(seconds=1)
+    with SessionLocal() as db:
+        db.query(Admin).update({"password_changed_at": changed})
+        db.commit()
+    old_token = make_token(iat=(changed - timedelta(milliseconds=600)).timestamp())
+    assert client.get(ME, headers={"Authorization": f"Bearer {old_token}"}).status_code == 401
+
+
 def test_missing_token(client):
     response = client.get(ME)
     assert response.status_code == 401

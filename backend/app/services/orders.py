@@ -68,6 +68,23 @@ def lock_products(db: Session, product_ids) -> dict[int, Product]:
     return {product.id: product for product in rows}
 
 
+def check_order_limits(db: Session, phone: str, units: int) -> None:
+    settings = get_settings()
+    if units > settings.max_units_per_order:
+        raise AppError(
+            422,
+            f"You can order up to {settings.max_units_per_order} items at once. "
+            "Please call us for larger orders."
+        )
+    pending = db.scalar(
+        select(func.count()).where(Order.customer_phone == phone, Order.status == "pending")
+    )
+    if pending >= settings.max_pending_orders_per_phone:
+        raise AppError(
+            429, "You already have orders waiting for confirmation. We'll call you shortly about them."
+        )
+
+
 def place_order(db: Session, data: OrderCreate, idempotency_key: str | None = None) -> tuple[Order, bool]:
     """Saves a new pending order and reserves its stock. Returns (order, created).
 
@@ -83,8 +100,14 @@ def place_order(db: Session, data: OrderCreate, idempotency_key: str | None = No
     quantities: dict[int, int] = defaultdict(int)
     for item in data.items:
         quantities[item.id] += item.quantity
+    check_order_limits(db, data.customer.phone, sum(quantities.values()))
 
     products = lock_products(db, quantities)
+    # Checked again now that we hold the locks: a request with the same key may have
+    # been placing this order while we waited, and must not fail on the stock it took
+    if idempotency_key and (existing := find_by_idempotency_key(db, idempotency_key)):
+        db.rollback()  # release the locks
+        return existing, False
     items = []
     for product_id, quantity in quantities.items():
         product = products.get(product_id)
@@ -173,6 +196,23 @@ def shop_day_start(day: date) -> datetime:
     return datetime.combine(day, time.min, tzinfo=ZoneInfo(get_settings().shop_timezone))
 
 
+def phone_digits(q: str) -> str | None:
+    """The digits to look for in phone numbers, or None if q doesn't look like (part of) a phone.
+
+    "0555 12 34" → "05551234" and "+213 555 12" → "055512", but "ORD-7K3F" → None,
+    so searching an order number doesn't also list every phone containing "73".
+    """
+    compact = re.sub(r"[\s.\-()]", "", q)
+    if compact.startswith("+213"):
+        compact = "0" + compact[4:]
+    return compact if compact.isdigit() else None
+
+
+def phone_matches(column, q: str):
+    digits = phone_digits(q)
+    return [column.like(f"%{digits}%")] if digits else []
+
+
 def search_orders(q: str | None, date_from: date | None, date_to: date | None) -> Select:
     query = select(Order)
     if q:
@@ -181,11 +221,8 @@ def search_orders(q: str | None, date_from: date | None, date_to: date | None) -
             Order.order_number.ilike(pattern),
             Order.customer_name.ilike(pattern),
             Order.customer_email.ilike(pattern),
+            *phone_matches(Order.customer_phone, q),
         ]
-        # "0555 12 34" should find 0555123456
-        digits = re.sub(r"\D", "", q)
-        if digits:
-            matches.append(Order.customer_phone.like(f"%{digits}%"))
         query = query.where(or_(*matches))
     if date_from:
         query = query.where(Order.created_at >= shop_day_start(date_from))
@@ -218,8 +255,13 @@ def list_customers(db: Session, *, page: int, size: int, q: str | None = None) -
     """Buyers, one per phone number, with their latest details and totals."""
     orders = select(Order)
     if q:
+        # Pick the customers with any matching order, but count all of their orders,
+        # so the totals and the latest name/address don't depend on the search
         pattern = f"%{escape_like(q.strip())}%"
-        orders = orders.where(or_(Order.customer_name.ilike(pattern), Order.customer_phone.like(pattern)))
+        matching_phones = select(Order.customer_phone).where(
+            or_(Order.customer_name.ilike(pattern), *phone_matches(Order.customer_phone, q))
+        )
+        orders = orders.where(Order.customer_phone.in_(matching_phones))
     orders = orders.subquery()
 
     totals = (

@@ -6,13 +6,11 @@ from typing import Annotated
 from fastapi import APIRouter, Query, Response
 
 from app.api.deps import AdminOnly, DbSession, StaffOrAdmin
-from app.schemas.common import Page, page_of
+from app.schemas.common import Page, PageNumber, PageSize, page_of
 from app.schemas.product import Category, ProductAdmin, ProductCreate, ProductPublic, ProductUpdate
 from app.services import products as service
 
 # Shared query parameters for both product lists
-PageNumber = Annotated[int, Query(ge=1)]
-PageSize = Annotated[int, Query(ge=1, le=100)]
 Search = Annotated[str | None, Query(max_length=100, description="Part of the product name")]
 InStock = Annotated[bool | None, Query(alias="inStock")]
 

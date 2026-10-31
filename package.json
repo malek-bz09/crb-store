@@ -1,11 +1,16 @@
 {
   "name": "underground",
   "private": true,
+  "packageManager": "pnpm@10.28.1",
   "scripts": {
-    "api": "pnpm --dir frontend api",
-    "dev": "pnpm --dir frontend dev",
-    "build": "pnpm --dir frontend build",
-    "lint": "pnpm --dir frontend lint",
-    "install:frontend": "pnpm --dir frontend install"
+    "dev": "turbo run dev",
+    "api": "turbo run dev --filter=backend",
+    "web": "turbo run dev --filter=ecom-template",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "^2"
   }
 }

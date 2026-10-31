@@ -33,7 +33,7 @@ def list_products(
     is_available: bool | None = None,
 ) -> tuple[list[Product], int]:
     """Returns one page of matching products, plus how many match in total."""
-    query = select(Product)
+    query = select(Product).where(Product.deleted_at.is_(None))
     if q:
         # ILIKE: case-insensitive, so "polo" finds "Burberry Check Collar Polo"
         query = query.where(Product.name.ilike(f"%{escape_like(q)}%", escape="\\"))
@@ -54,6 +54,8 @@ def list_products(
 
 def get_product(db: Session, product_id: int, *, include_hidden: bool = False) -> Product:
     product = db.get(Product, product_id)
+    if product and product.deleted_at is not None:
+        product = None
     # A hidden product is "not found" for shoppers, so they can't tell it exists
     if not product or (not product.is_available and not include_hidden):
         raise AppError(404, "Product not found.")
@@ -142,6 +144,8 @@ def update_product(db: Session, product_id: int, data: ProductUpdate) -> Product
 
 
 def delete_product(db: Session, product_id: int) -> None:
+    """Soft delete: hidden everywhere, but kept for the orders that contain it."""
     product = get_product(db, product_id, include_hidden=True)
-    db.delete(product)
+    product.deleted_at = func.now()
+    product.is_available = False  # so every shop query and checkout already skips it
     db.commit()

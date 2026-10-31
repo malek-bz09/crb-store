@@ -1,8 +1,9 @@
 """The products table."""
 
+from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import CheckConstraint, Identity, Numeric, String, Text, true
+from sqlalchemy import CheckConstraint, DateTime, Identity, Numeric, String, Text, true
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base, TimestampMixin, sql_in
@@ -41,3 +42,6 @@ class Product(TimestampMixin, Base):
     stock_quantity: Mapped[int] = mapped_column(server_default="0")
     # Admin switch: false hides the product from the shop without deleting it
     is_available: Mapped[bool] = mapped_column(server_default=true(), index=True)
+    # Set when an admin deletes the product. The row is kept so past orders still
+    # point to it: it stays in the sales figures and cancelled orders restock it
+    deleted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
