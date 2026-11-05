@@ -14,6 +14,7 @@ cd backend
 cp .env.example .env                 # then set JWT_SECRET_KEY (the file says how)
 uv run alembic upgrade head          # create the tables
 uv run python -m app.cli seed        # add the sample products
+uv run python -m app.cli seed --replace   # already have the old UNDERGROUND products? swap them for the CRB ones
 uv run python -m app.cli create-admin --email you@shop.dz --name "Your Name"
 ```
 

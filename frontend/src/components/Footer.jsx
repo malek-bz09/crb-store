@@ -48,12 +48,16 @@ function Footer() {
           <h3>Contact Us</h3>
           <p>Have questions? We'd love to hear from you.</p>
           <div className="footer-contact">
-            <p>
-              <strong>Email:</strong> <a href={`mailto:${brand.email}`}>{brand.email}</a>
-            </p>
-            <p>
-              <strong>Phone:</strong> <a href={brand.phoneHref}>{brand.phone}</a>
-            </p>
+            {brand.email && (
+              <p>
+                <strong>Email:</strong> <a href={`mailto:${brand.email}`}>{brand.email}</a>
+              </p>
+            )}
+            {brand.phone && (
+              <p>
+                <strong>Phone:</strong> <a href={brand.phoneHref}>{brand.phone}</a>
+              </p>
+            )}
             <p>
               <strong>Address:</strong> {brand.city}
             </p>

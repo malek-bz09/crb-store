@@ -15,8 +15,10 @@
 .hero-image {
   width: 100%;
   height: 100%;
-  min-height: 32rem;
-  max-height: calc(100vh - 110px);
+  /* The screen height left under the announcement and navbar */
+  --hero-fit: calc(100svh - var(--announcement-h) - var(--header-h));
+  min-height: max(20rem, min(32rem, var(--hero-fit)));
+  max-height: max(20rem, var(--hero-fit));
   object-fit: cover;
 }
 
@@ -83,7 +85,7 @@
 
 @media (max-width: 700px) {
   .hero-image {
-    min-height: 28rem;
+    min-height: max(20rem, min(28rem, var(--hero-fit)));
   }
 
   .hero-content {

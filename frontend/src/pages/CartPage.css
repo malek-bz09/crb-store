@@ -117,7 +117,7 @@
 /* Summary */
 .cart-summary {
   position: sticky;
-  top: 6rem;
+  top: var(--sticky-top);
   padding: 1.75rem;
   border: 1px solid var(--border);
 }

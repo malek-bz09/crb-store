@@ -5,9 +5,10 @@ export const brand = {
   clubName: 'Chabab Riadhi Belouizdad',
   // Replace with the club's official crest (e.g. /crb-crest.svg) if you have the rights to use it
   mark: '/crb-mark.svg',
-  email: 'contact@example.com',
-  phone: '+213 XX XX XX XX',
-  phoneHref: 'tel:+213000000000',
+  // TODO: the club's real contact details. Empty ones are hidden in the footer
+  email: '',
+  phone: '', // as displayed, e.g. '+213 21 00 00 00'
+  phoneHref: '', // e.g. 'tel:+21321000000'
   city: 'Belouizdad, Algiers',
   // Browser UI colour on mobile; keep in sync with --accent in index.css
   themeColor: '#c8102e',

@@ -3,6 +3,11 @@
   --white: #fff;
   /* Club colours: red and white */
   --accent: #c8102e;
+  /* Real values are set by Navbar.jsx; these are only used before it measures */
+  --announcement-h: 2rem;
+  --header-h: 5rem;
+  /* Where sticky panels stop: just under the sticky navbar */
+  --sticky-top: calc(var(--header-h) + 1.5rem);
   --accent-dark: #8f0a20;
   --gray: #6b6b6b;
   --border: #e5e5e5;

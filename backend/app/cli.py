@@ -2,6 +2,7 @@
 
     uv run python -m app.cli create-admin --email you@shop.dz --name "Your Name" [--role staff]
     uv run python -m app.cli seed     # add the sample products to an empty catalogue
+    uv run python -m app.cli seed --replace   # delete every other product, add missing sample ones
 """
 
 import argparse
@@ -9,7 +10,7 @@ import sys
 from decimal import Decimal
 from getpass import getpass
 
-from sqlalchemy import select
+from sqlalchemy import func, select, update
 
 from app.db.session import SessionLocal
 from app.models.product import Product
@@ -39,20 +40,34 @@ SAMPLE_PRODUCTS = [
 ]
 
 
-def seed() -> None:
+def seed(replace: bool = False) -> None:
+    """Fills an empty catalogue. With replace=True, also works on a catalogue that
+    has products: every product that isn't a sample one is deleted (the same soft
+    delete as the admin, so past orders keep their items), and the missing sample
+    products are added."""
+    sample_slugs = [slug for slug, *_ in SAMPLE_PRODUCTS]
     with SessionLocal() as db:
-        if db.scalar(select(Product.id).limit(1)) is not None:
-            sys.exit("The catalogue already has products; nothing was added.")
+        if not replace and db.scalar(select(Product.id).limit(1)) is not None:
+            sys.exit("The catalogue already has products; nothing was added. "
+                     "Use `seed --replace` to swap them for the sample ones.")
+        removed = db.execute(
+            update(Product)
+            .where(Product.deleted_at.is_(None), Product.slug.not_in(sample_slugs))
+            .values(deleted_at=func.now())
+        ).rowcount
+        # Slugs are unique even among deleted products, so skip any already in the table
+        existing = set(db.scalars(select(Product.slug).where(Product.slug.in_(sample_slugs))))
+        new = [row for row in SAMPLE_PRODUCTS if row[0] not in existing]
         db.add_all(
             Product(
                 slug=slug, name=name, category=category, price=Decimal(price),
                 compare_at_price=Decimal(old) if old else None, stock_quantity=stock,
                 description=description, image_url=f"/{slug}.jpg",
             )
-            for slug, name, category, price, old, stock, description in SAMPLE_PRODUCTS
+            for slug, name, category, price, old, stock, description in new
         )
         db.commit()
-    print(f"Added {len(SAMPLE_PRODUCTS)} sample products.")
+    print(f"Added {len(new)} sample products" + (f", deleted {removed} others." if removed else "."))
 
 
 def create_admin(email: str, name: str, role: str) -> None:
@@ -73,14 +88,16 @@ def create_admin(email: str, name: str, role: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(prog="python -m app.cli")
     commands = parser.add_subparsers(dest="command", required=True)
-    commands.add_parser("seed", help="add the sample products to an empty catalogue")
+    seed_command = commands.add_parser("seed", help="add the sample products to an empty catalogue")
+    seed_command.add_argument("--replace", action="store_true",
+                              help="delete every non-sample product, then add the missing sample ones")
     new_admin = commands.add_parser("create-admin", help="add an admin account, or reset its password")
     new_admin.add_argument("--email", required=True)
     new_admin.add_argument("--name", required=True)
     new_admin.add_argument("--role", choices=["admin", "staff"], default="admin")
     args = parser.parse_args()
     if args.command == "seed":
-        seed()
+        seed(replace=args.replace)
     elif args.command == "create-admin":
         create_admin(args.email, args.name, args.role)
 

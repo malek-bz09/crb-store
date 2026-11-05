@@ -71,7 +71,7 @@
 /* Info */
 .product-info {
   position: sticky;
-  top: 6rem;
+  top: var(--sticky-top);
 }
 
 .product-category {
