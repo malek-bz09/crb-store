@@ -16,27 +16,16 @@ from app.db.session import SessionLocal
 from app.models.product import Product
 from app.services.auth import save_admin
 
-# The shop's starting catalogue. Photos are in frontend/public/<slug>.jpg
-# (sources and licences in frontend/public/CREDITS.md).
+# The shop's starting catalogue; the photos are in frontend/public/
 SAMPLE_PRODUCTS = [
-    ("crb-home-jersey", "CRB Home Jersey 26/27", "tops", "8900", None, 25,
-     "The red home shirt in a light, breathable match fabric with a ribbed crew neck."),
-    ("crb-away-jersey", "CRB Away Jersey 26/27", "tops", "8900", None, 20,
-     "The white away shirt with red trim on the collar and cuffs."),
-    ("crb-supporters-tee", "Supporters Tee – Red", "tops", "3500", None, 40,
-     "Soft cotton everyday tee in club red, for match days and every other day."),
-    ("crb-supporters-hoodie", "Supporters Hoodie – Red", "tops", "6900", "7900", 15,
-     "Heavyweight brushed-fleece hoodie in club red with a roomy hood."),
-    ("crb-retro-stripe-knit", "Retro Stripe Knit Sweater", "tops", "5900", None, 8,
-     "Loose-fit knit sweater with old-school terrace stripes on cream."),
+    ("crb-home-jersey", "CRB Home Jersey 26/27", "tops", "8900", None, 25, "/images.jpeg",
+     "The red home shirt with the white chevron, in a light, breathable match fabric."),
+    ("crb-training-tracksuit", "Training Tracksuit 26/27", "bottoms", "12900", "14900", 12,
+     "/optimize.webp",
+     "Full-zip red jacket and navy tapered pants with red side stripes and the club crest."),
     ("crb-training-joggers", "Training Joggers – Red", "bottoms", "4900", None, 18,
+     "/crb-training-joggers.jpg",
      "Tapered fleece joggers with an elastic waist and cuffed ankles."),
-    ("crb-match-shorts", "Training Shorts – Black", "bottoms", "2900", "3500", 22,
-     "Lightweight training shorts with an elastic drawcord waist."),
-    ("crb-red-knit-beanie", "Red Knit Beanie", "hats", "1900", None, 30,
-     "Chunky ribbed beanie in club red with a fold-up cuff."),
-    ("crb-burgundy-beanie", "Winter Beanie – Burgundy", "hats", "1900", None, 0,
-     "Deep burgundy knit beanie for cold evenings in the stands."),
 ]
 
 
@@ -62,9 +51,9 @@ def seed(replace: bool = False) -> None:
             Product(
                 slug=slug, name=name, category=category, price=Decimal(price),
                 compare_at_price=Decimal(old) if old else None, stock_quantity=stock,
-                description=description, image_url=f"/{slug}.jpg",
+                description=description, image_url=image,
             )
-            for slug, name, category, price, old, stock, description in new
+            for slug, name, category, price, old, stock, image, description in new
         )
         db.commit()
     print(f"Added {len(new)} sample products" + (f", deleted {removed} others." if removed else "."))

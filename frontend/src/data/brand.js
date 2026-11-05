@@ -3,8 +3,7 @@
 export const brand = {
   shortName: 'CRB Store',
   clubName: 'Chabab Riadhi Belouizdad',
-  // Replace with the club's official crest (e.g. /crb-crest.svg) if you have the rights to use it
-  mark: '/crb-mark.svg',
+  mark: '/algeria_cr-belouizdad.football-logos.cc.svg',
   // TODO: the club's real contact details. Empty ones are hidden in the footer
   email: '',
   phone: '', // as displayed, e.g. '+213 21 00 00 00'

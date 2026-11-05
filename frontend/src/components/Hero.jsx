@@ -7,8 +7,8 @@ function Hero() {
     <section className="hero">
       <img
         className="hero-image"
-        src="/crb-hero-supporters.jpg"
-        alt="Supporters lighting red flares in the stands at night"
+        src="/860184935_1785493500248266_4784916831923244551_n.jpg"
+        alt="CRB players celebrating a goal in front of the stands"
       />
       <div className="hero-content">
         <p className="hero-kicker">{brand.clubName}</p>
