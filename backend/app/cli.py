@@ -15,26 +15,27 @@ from app.db.session import SessionLocal
 from app.models.product import Product
 from app.services.auth import save_admin
 
-# The shop's starting catalogue. Photos are in frontend/public/<slug>.jpg.
+# The shop's starting catalogue. Photos are in frontend/public/<slug>.jpg
+# (sources and licences in frontend/public/CREDITS.md).
 SAMPLE_PRODUCTS = [
-    ("burberry-check-collar-polo-navy", "Burberry Check Collar Polo", "tops", "8500", None, 6,
-     "Navy cotton piqué polo with the signature beige check on the collar."),
-    ("weekend-offender-zip-polo-navy", "Weekend Offender Check Zip Polo", "tops", "6900", "7900", 10,
-     "Navy quarter-zip polo with a house-check collar and woven chest badge."),
-    ("burberry-check-hood-zip-hoodie-black", "Burberry Check Hood Zip Hoodie – Black", "tops", "14500", None, 4,
-     "Black cotton zip-up hoodie lined with the classic check inside the hood."),
-    ("burberry-check-hood-zip-hoodie-grey", "Burberry Check Hood Zip Hoodie – Grey", "tops", "14500", None, 5,
-     "Heather grey zip-up hoodie with an embroidered logo and check-lined hood."),
-    ("vintage-wash-barrel-jeans", "Vintage Wash Barrel Jeans", "bottoms", "7900", None, 12,
-     "Wide barrel-leg jeans in a faded vintage wash with curved knee seams."),
-    ("levis-light-wash-straight-jeans", "Levi's Light Wash Straight Jeans", "bottoms", "7500", "8900", 9,
-     "Straight, relaxed-fit jeans in a bleached light-blue wash."),
-    ("levis-550-relaxed-jeans", "Levi's 550 Relaxed Fit Jeans", "bottoms", "7900", None, 8,
-     "The classic relaxed-fit 550 in a mid-blue stonewash."),
-    ("the-north-face-bucket-hat-black", "The North Face Bucket Hat", "hats", "3900", None, 15,
-     "Black nylon bucket hat with a webbing band and adjustable chin cord."),
-    ("weekend-offender-check-bucket-hat", "Weekend Offender Check Bucket Hat", "hats", "3500", None, 0,
-     "Gingham-check bucket hat with a woven logo patch on the front."),
+    ("crb-home-jersey", "CRB Home Jersey 26/27", "tops", "8900", None, 25,
+     "The red home shirt in a light, breathable match fabric with a ribbed crew neck."),
+    ("crb-away-jersey", "CRB Away Jersey 26/27", "tops", "8900", None, 20,
+     "The white away shirt with red trim on the collar and cuffs."),
+    ("crb-supporters-tee", "Supporters Tee – Red", "tops", "3500", None, 40,
+     "Soft cotton everyday tee in club red, for match days and every other day."),
+    ("crb-supporters-hoodie", "Supporters Hoodie – Red", "tops", "6900", "7900", 15,
+     "Heavyweight brushed-fleece hoodie in club red with a roomy hood."),
+    ("crb-retro-stripe-knit", "Retro Stripe Knit Sweater", "tops", "5900", None, 8,
+     "Loose-fit knit sweater with old-school terrace stripes on cream."),
+    ("crb-training-joggers", "Training Joggers – Red", "bottoms", "4900", None, 18,
+     "Tapered fleece joggers with an elastic waist and cuffed ankles."),
+    ("crb-match-shorts", "Training Shorts – Black", "bottoms", "2900", "3500", 22,
+     "Lightweight training shorts with an elastic drawcord waist."),
+    ("crb-red-knit-beanie", "Red Knit Beanie", "hats", "1900", None, 30,
+     "Chunky ribbed beanie in club red with a fold-up cuff."),
+    ("crb-burgundy-beanie", "Winter Beanie – Burgundy", "hats", "1900", None, 0,
+     "Deep burgundy knit beanie for cold evenings in the stands."),
 ]
 
 

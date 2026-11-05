@@ -1,11 +1,15 @@
 :root {
-  --black: #000;
+  --black: #111;
   --white: #fff;
+  /* Club colours: red and white */
+  --accent: #c8102e;
+  --accent-dark: #8f0a20;
   --gray: #6b6b6b;
   --border: #e5e5e5;
   --max-width: 1440px;
   --gutter: clamp(1rem, 4vw, 3rem);
   --font: 'Helvetica Neue', Helvetica, Arial, system-ui, sans-serif;
+  --font-display: 'Arial Black', 'Helvetica Neue', Impact, system-ui, sans-serif;
 }
 
 *,

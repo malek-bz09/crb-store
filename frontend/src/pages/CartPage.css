@@ -166,13 +166,13 @@
   text-align: center;
   text-transform: uppercase;
   color: var(--white);
-  background: var(--black);
-  border: 1px solid var(--black);
+  background: var(--accent);
+  border: 1px solid var(--accent);
   transition: background 0.2s, color 0.2s;
 }
 
 .cart-button:hover {
-  color: var(--black);
+  color: var(--accent);
   background: var(--white);
 }
 

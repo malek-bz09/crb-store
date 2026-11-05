@@ -1,7 +1,7 @@
 [project]
 name = "underground-backend"
 version = "0.1.0"
-description = "REST API for the UNDERGROUND store (FastAPI, SQLAlchemy, PostgreSQL)"
+description = "REST API for the CRB store (FastAPI, SQLAlchemy, PostgreSQL)"
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.14",

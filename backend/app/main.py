@@ -16,7 +16,7 @@ API_PREFIX = "/api/v1"
 settings = get_settings()
 
 app = FastAPI(
-    title="UNDERGROUND API",
+    title="CRB Store API",
     openapi_url=f"{API_PREFIX}/openapi.json",
     docs_url="/docs",
 )

@@ -15,7 +15,7 @@ function ProductCard({ product }) {
           <img className="product-card-image-alt" src={images[1]} alt="" loading="lazy" />
         )}
         {soldOut ? (
-          <span className="product-card-badge">Sold out</span>
+          <span className="product-card-badge is-sold-out">Sold out</span>
         ) : (
           onSale && <span className="product-card-badge">Sale</span>
         )}
@@ -23,7 +23,7 @@ function ProductCard({ product }) {
 
       <div className="product-card-info">
         <h3 className="product-card-name">{name}</h3>
-        <p className="product-card-price">
+        <p className={`product-card-price${onSale ? ' is-on-sale' : ''}`}>
           {onSale && <s className="product-card-compare">{formatPrice(compareAtPrice)}</s>}
           {formatPrice(price)}
         </p>

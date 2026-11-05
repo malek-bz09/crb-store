@@ -125,7 +125,7 @@
 
 .checkout-payment input {
   margin-top: 0.25rem;
-  accent-color: var(--black);
+  accent-color: var(--accent);
 }
 
 .checkout-payment strong {

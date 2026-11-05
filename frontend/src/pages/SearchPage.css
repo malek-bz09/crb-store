@@ -23,11 +23,11 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--white);
-  background: var(--black);
-  border: 1px solid var(--black);
+  background: var(--accent);
+  border: 1px solid var(--accent);
 }
 
 .search-empty-link:hover {
-  color: var(--black);
+  color: var(--accent);
   background: var(--white);
 }

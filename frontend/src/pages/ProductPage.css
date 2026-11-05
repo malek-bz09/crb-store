@@ -162,13 +162,13 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--white);
-  background: var(--black);
-  border: 1px solid var(--black);
+  background: var(--accent);
+  border: 1px solid var(--accent);
   transition: background 0.2s, color 0.2s;
 }
 
 .product-add:hover:not(:disabled) {
-  color: var(--black);
+  color: var(--accent);
   background: var(--white);
 }
 

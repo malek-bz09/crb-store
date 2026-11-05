@@ -2,6 +2,7 @@
   margin-top: 6rem;
   color: var(--white);
   background: var(--black);
+  border-top: 6px solid var(--accent);
 }
 
 .footer-columns {
@@ -14,11 +15,13 @@
 }
 
 .footer-logo {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
   margin-bottom: 1rem;
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 

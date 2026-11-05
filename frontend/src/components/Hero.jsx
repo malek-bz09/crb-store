@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { brand } from '../data/brand'
 import './Hero.css'
 
 function Hero() {
@@ -6,12 +7,19 @@ function Hero() {
     <section className="hero">
       <img
         className="hero-image"
-        src="/hero-street-crowd.jpg"
-        alt="A crowd in casual streetwear on a city street"
+        src="/crb-hero-supporters.jpg"
+        alt="Supporters lighting red flares in the stands at night"
       />
-      <Link to="/shop" className="hero-cta">
-        Shop now
-      </Link>
+      <div className="hero-content">
+        <p className="hero-kicker">{brand.clubName}</p>
+        <h1 className="hero-title">
+          Wear the <span>red</span>.
+        </h1>
+        <p className="hero-text">Jerseys, training wear and caps for every supporter.</p>
+        <Link to="/shop" className="hero-cta">
+          Shop now
+        </Link>
+      </div>
     </section>
   )
 }

@@ -1,6 +1,7 @@
 import { Link } from 'react-router'
 import './Footer.css'
 import { categories } from '../data/products'
+import { brand } from '../data/brand'
 
 function Footer() {
   return (
@@ -8,9 +9,13 @@ function Footer() {
       <div className="footer-columns">
         <div className="footer-about">
           <Link to="/" className="footer-logo">
-            UNDERGROUND
+            <img src={brand.mark} alt="" width="40" height="40" />
+            {brand.shortName}
           </Link>
-          <p>Quality products, delivered to your door.</p>
+          <p>
+            Gear for {brand.clubName} supporters, delivered to your door anywhere in Algeria.
+            Pay cash when it arrives.
+          </p>
         </div>
 
         <div className="footer-column">
@@ -44,22 +49,20 @@ function Footer() {
           <p>Have questions? We'd love to hear from you.</p>
           <div className="footer-contact">
             <p>
-            <strong>Email:</strong>{" "}
-            <a href="mailto:contact@example.com">contact@example.com</a>
+              <strong>Email:</strong> <a href={`mailto:${brand.email}`}>{brand.email}</a>
             </p>
             <p>
-            <strong>Phone:</strong>{" "}
-            <a href="tel:+213000000000">+213 XX XX XX XX</a>
+              <strong>Phone:</strong> <a href={brand.phoneHref}>{brand.phone}</a>
             </p>
             <p>
-            <strong>Address:</strong> Algiers, Algeria
+              <strong>Address:</strong> {brand.city}
             </p>
           </div>
         </div>
       </div>
 
       <p className="footer-copyright">
-        © {new Date().getFullYear()} UNDERGROUND. All rights reserved.
+        © {new Date().getFullYear()} {brand.shortName}. All rights reserved.
       </p>
     </footer>
   )

@@ -1,6 +1,6 @@
-# UNDERGROUND
+# CRB Store
 
-React + Vite (with React Compiler) storefront, with a Python FastAPI backend in `backend/`.
+A store for Chabab Riadhi Belouizdad supporters. React + Vite (with React Compiler) storefront, with a Python FastAPI backend in `backend/`.
 
 ## Run it
 

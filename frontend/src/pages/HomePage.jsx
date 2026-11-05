@@ -1,4 +1,5 @@
 import Hero from '../components/Hero'
+import CategoryTiles from '../components/CategoryTiles'
 import ProductGrid from '../components/ProductGrid'
 import CatalogMessage from '../components/CatalogMessage'
 import { useProducts } from '../context/products'
@@ -9,10 +10,11 @@ function HomePage() {
   return (
     <>
       <Hero />
+      <CategoryTiles />
       {loading || error ? (
         <CatalogMessage error={error} />
       ) : (
-        <ProductGrid title="All products" products={products} />
+        <ProductGrid title="New in" products={products} />
       )}
     </>
   )

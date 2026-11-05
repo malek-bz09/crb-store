@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, NavLink, Outlet } from 'react-router'
 import { useAuth } from '../../context/auth'
+import { brand } from '../../data/brand'
 import './AdminLayout.css'
 
 const links = [
@@ -19,7 +20,7 @@ function AdminLayout() {
       <aside className="admin-sidebar">
         <div className="admin-sidebar-header">
           <Link to="/admin" className="admin-logo">
-            UNDERGROUND
+            {brand.shortName.toUpperCase()}
           </Link>
           <span className="admin-badge">Admin</span>
         </div>
