@@ -55,6 +55,12 @@ function Navbar() {
               <li>
                 <Link to="/shop">Shop all</Link>
               </li>
+              {/* Early in the list: on phones the links scroll sideways */}
+              <li>
+                <Link to="/club" className="navbar-club-link">
+                  CRB Analytics
+                </Link>
+              </li>
               {categories.map((category) => (
                 <li key={category.id}>
                   <Link to={`/category/${category.id}`}>{category.name}</Link>

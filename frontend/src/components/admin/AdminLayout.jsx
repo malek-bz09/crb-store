@@ -8,7 +8,7 @@ const links = [
   { to: '/admin', label: 'Dashboard', end: true },
   { to: '/admin/orders', label: 'Orders' },
   { to: '/admin/products', label: 'Products' },
-
+  { to: '/admin/matches', label: 'Matches' },
 ]
 
 function AdminLayout() {

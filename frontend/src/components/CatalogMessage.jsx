@@ -1,10 +1,10 @@
 import './CatalogMessage.css'
 
-// Shown while products load, or when they couldn't be loaded
-function CatalogMessage({ error }) {
+// Shown while something loads (products by default), or when it couldn't be loaded
+function CatalogMessage({ error, loadingText = 'Loading products…' }) {
   return (
     <p className="catalog-message" role={error ? 'alert' : 'status'}>
-      {error ?? 'Loading products…'}
+      {error ?? loadingText}
     </p>
   )
 }

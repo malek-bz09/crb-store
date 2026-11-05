@@ -16,6 +16,8 @@ if not TEST_DATABASE_URL:
 os.environ["DATABASE_URL"] = TEST_DATABASE_URL
 # A fixed signing key for test tokens, so tests don't depend on your .env
 os.environ["JWT_SECRET_KEY"] = "test-only-secret-key-that-is-long-enough-1234"
+# No background requests to the real football API during tests
+os.environ["FOOTBALL_REFRESH"] = "false"
 
 import pytest  # noqa: E402
 from alembic import command  # noqa: E402

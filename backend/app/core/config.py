@@ -52,6 +52,27 @@ class Settings(BaseSettings):
     # Times are stored in UTC; "orders per day" and date filters use the shop's local days
     shop_timezone: str = "Africa/Algiers"
 
+    # Match data for the CRB page comes from TheSportsDB (https://www.thesportsdb.com).
+    # "123" is its free public key: it's limited to about 30 requests a minute and
+    # shows only the top 5 of the league table. A paid key lifts both limits.
+    sportsdb_api_key: SecretStr = SecretStr("123")
+    sportsdb_api_url: str = "https://www.thesportsdb.com/api/v1/json"
+    # TheSportsDB's ids for CR Belouizdad and the Algerian Ligue 1
+    crb_team_id: int = 139278
+    crb_league_id: int = 4753
+    # The season to show, named after the year it starts (2026 = 2026/27).
+    # When not set: the current one, switching over in July.
+    football_season: int | None = None
+    # Keeps the saved match data up to date in the background while the API runs.
+    # The tests turn it off.
+    football_refresh: bool = True
+
+    @field_validator("football_season", mode="before")
+    @classmethod
+    def empty_means_unset(cls, value):
+        # FOOTBALL_SEASON= (left empty in .env) means "not set"
+        return None if isinstance(value, str) and not value.strip() else value
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def split_origins(cls, value):

@@ -5,6 +5,7 @@ import ScrollToTop from './components/ScrollToTop'
 import HomePage from './pages/HomePage'
 import CategoryPage from './pages/CategoryPage'
 import ShopPage from './pages/ShopPage'
+import ClubPage from './pages/ClubPage'
 import SearchPage from './pages/SearchPage'
 import ProductPage from './pages/ProductPage'
 import CartPage from './pages/CartPage'
@@ -21,6 +22,7 @@ import AdminOrderPage from './pages/admin/AdminOrderPage'
 import AdminProductFormPage from './pages/admin/AdminProductFormPage'
 import AdminProductsPage from './pages/admin/AdminProductsPage'
 import AdminCustomersPage from './pages/admin/AdminCustomersPage'
+import AdminMatchesPage from './pages/admin/AdminMatchesPage'
 
 // Storefront pages share the navbar and footer; admin pages have their own layout
 function StoreLayout() {
@@ -43,6 +45,7 @@ function App() {
         <Route element={<StoreLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/shop" element={<ShopPage />} />
+          <Route path="/club" element={<ClubPage />} />
           <Route path="/category/:categoryId" element={<CategoryPage />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/product/:slug" element={<ProductPage />} />
@@ -62,6 +65,7 @@ function App() {
             <Route path="products/new" element={<AdminProductFormPage />} />
             <Route path="products/:productId" element={<AdminProductFormPage />} />
             <Route path="customers" element={<AdminCustomersPage />} />
+            <Route path="matches" element={<AdminMatchesPage />} />
             <Route path="settings" element={<AdminSectionPage title="Settings" />} />
           </Route>
         </Route>

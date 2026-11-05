@@ -273,3 +273,31 @@ a.admin-button {
   justify-content: center;
   margin-top: 1rem;
 }
+
+/* Ticket link form on the Matches page */
+.admin-ticket-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 22rem;
+}
+
+.admin-ticket-form input {
+  flex: 1;
+  min-width: 14rem;
+  padding: 0.5rem 0.625rem;
+  font-size: 0.8125rem;
+  border: 1px solid var(--border);
+}
+
+.admin-ticket-form input:focus {
+  border-color: var(--black);
+  outline: none;
+}
+
+.admin-ticket-error {
+  flex-basis: 100%;
+  font-size: 0.75rem;
+  color: #c00;
+}

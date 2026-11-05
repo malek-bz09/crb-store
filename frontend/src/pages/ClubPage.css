@@ -1,0 +1,486 @@
+/* CRB Analytics page */
+.club {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 3.5rem) var(--gutter) 0;
+}
+
+.club-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.club-header img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.club-header p {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+.club-header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---------- Next match ---------- */
+
+.club-next {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem) 1rem;
+  text-align: center;
+  color: var(--white);
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+}
+
+.club-next-kicker {
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.club-live {
+  padding: 0.125rem 0.5rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--white);
+}
+
+.club-next-teams {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1rem, 4vw, 3rem);
+  width: 100%;
+  max-width: 40rem;
+}
+
+.club-next-team {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: clamp(0.9375rem, 2.5vw, 1.25rem);
+}
+
+.club-next-team img,
+.club-next-crest {
+  width: clamp(48px, 10vw, 72px);
+  height: clamp(48px, 10vw, 72px);
+  object-fit: contain;
+}
+
+.club-next-crest {
+  background: rgb(255 255 255 / 0.15);
+  border-radius: 50%;
+}
+
+.club-next-score {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  text-transform: uppercase;
+}
+
+.club-next-when {
+  font-size: 0.9375rem;
+}
+
+.club-next-tickets {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.club-next-tickets small {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.club-ticket-button {
+  padding: 0.875rem 2rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--white);
+  border: 2px solid var(--white);
+}
+
+.club-ticket-button:hover {
+  color: var(--white);
+  background: transparent;
+}
+
+.club-next-note {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+/* ---------- Competition filter ---------- */
+
+.club-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+.club-tabs button {
+  padding: 0.5rem 0.875rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--white);
+  border: 1px solid var(--border);
+}
+
+.club-tabs button:hover {
+  border-color: var(--black);
+}
+
+.club-tabs button[aria-pressed='true'] {
+  color: var(--white);
+  background: var(--black);
+  border-color: var(--black);
+}
+
+/* ---------- Sections ---------- */
+
+.club-section {
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+
+.club-section h2 {
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.club-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 3rem;
+}
+
+.club-empty {
+  padding: 1.5rem 0;
+  font-size: 0.875rem;
+  color: var(--gray);
+}
+
+.club-source {
+  margin-top: 3rem;
+  font-size: 0.75rem;
+  color: var(--gray);
+}
+
+.club-source a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.club-table caption small {
+  font-weight: 400;
+  color: var(--gray);
+}
+
+/* ---------- Season numbers ---------- */
+
+.club-stats {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
+  margin: 0;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.club-stat {
+  padding: 1rem;
+  background: var(--white);
+}
+
+.club-stat dt {
+  font-size: 0.75rem;
+  color: var(--gray);
+}
+
+.club-stat dd {
+  margin: 0.25rem 0 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.club-form-row {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 1rem;
+}
+
+.club-form-row > span:first-child {
+  margin-right: 0.375rem;
+  font-size: 0.75rem;
+  color: var(--gray);
+}
+
+/* W / D / L: the letter carries the meaning, the colour helps at a glance */
+.club-form {
+  display: inline-grid;
+  place-items: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--white);
+  border-radius: 4px;
+}
+
+.club-form--W {
+  background: #1a7f37;
+}
+
+.club-form--D {
+  background: #6b6b6b;
+}
+
+.club-form--L {
+  background: #c00;
+}
+
+/* ---------- Match lists ---------- */
+
+.club-match {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr) 4.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.club-match-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.club-match-meta .club-match-tbc {
+  font-size: inherit;
+  color: inherit;
+}
+
+.club-match-meta span {
+  overflow: hidden;
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--gray);
+}
+
+.club-match-teams {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.club-match-score {
+  min-width: 3.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.club-match-end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+}
+
+.club-match-status {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+.club-match-ticket {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.club-match-ticket:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.club-more {
+  margin-top: 1rem;
+  padding: 0;
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: none;
+}
+
+/* A crest and a name; in lists the home side is right-aligned towards the score */
+.club-team {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.club-team > span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.club-team--end {
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.club-team img {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.club-team.is-crb {
+  font-weight: 700;
+}
+
+/* ---------- Tables ---------- */
+
+.club-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.club-table {
+  width: 100%;
+  font-size: 0.875rem;
+  border-collapse: collapse;
+}
+
+.club-table caption {
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+  text-align: left;
+}
+
+.club-table th,
+.club-table td {
+  padding: 0.625rem 0.75rem;
+  text-align: left;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--border);
+}
+
+.club-table th {
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gray);
+}
+
+.club-table .is-number {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* CRB's row: bold (from .club-team.is-crb) plus a red tint and edge */
+.club-table tr.is-crb td {
+  background: #fdf1f3;
+}
+
+.club-table tr.is-crb td:first-child {
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 1024px) {
+  .club-stats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 800px) {
+  .club-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .club-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* 7 tiles in 2 columns: the last one takes the whole row instead of leaving a gap */
+  .club-stat:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  /* Room for the names: no crests in the lists, a tighter score */
+  .club-match {
+    font-size: 0.8125rem;
+  }
+
+  .club-match .club-team img {
+    display: none;
+  }
+
+  .club-match-teams {
+    gap: 0.5rem;
+  }
+
+  .club-match-score {
+    min-width: 2.75rem;
+  }
+
+  .club-table th,
+  .club-table td {
+    padding: 0.5rem 0.375rem;
+  }
+
+  .club-match {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .club-match-meta {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .club-table-extra {
+    display: none;
+  }
+}

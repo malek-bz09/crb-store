@@ -58,6 +58,26 @@ Add, edit and delete products in **Admin → Products**, including uploading a p
 (saved in `backend/data/uploads/`). The shop loads products from the backend, so
 changes show up straight away. Deleting hides a product but keeps it in old orders.
 
+## CRB Analytics and match tickets
+
+The **/club** page shows CRB's next match, fixtures and results, the Ligue 1 table
+and season numbers. The data comes from [TheSportsDB](https://www.thesportsdb.com)
+with its free public key, so there's nothing to set up.
+
+The free key allows about 30 requests a minute, so pages never call it: while the
+backend runs, a background job saves the data in the database and refreshes it
+every few minutes, one request every 2.5 seconds, only for what's out of date
+(finished rounds are kept a week). The first time, filling the whole season takes
+a couple of minutes; until then the page says the data is still loading.
+
+What the free data doesn't have: the league table stops at the top 5, and CAF and
+cup matches only show up when they're CRB's next or latest match. A paid key
+(`SPORTSDB_API_KEY` in `backend/.env`) gives the full table.
+
+**Tickets:** in **Admin → Matches**, paste each upcoming match's Digiticket page.
+The CRB page then shows a **Buy tickets** button that opens it. Only admins can
+change the links; staff can see them.
+
 ## Admin accounts
 
 Sign in at **/admin** with your email. There is no sign-up and no default account;

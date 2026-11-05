@@ -118,3 +118,9 @@
     width: 8rem;
   }
 }
+
+/* The link to the CRB page stands out from the shop categories */
+.navbar-links a.navbar-club-link {
+  font-weight: 700;
+  color: var(--accent);
+}
