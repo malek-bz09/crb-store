@@ -20,7 +20,13 @@ MATCHES = "/api/v1/admin/crb/matches"
 SEASON = "2026-2027"
 
 ME = (CRB, "CR Belouizdad")
-MCA, USMA, ESS, CSC, AHLY = (1, "MC Alger"), (2, "USM Alger"), (3, "ES Sétif"), (4, "CS Constantine"), (5, "Al Ahly")
+MCA, USMA, ESS, CSC, AHLY = (
+    (1, "MC Alger"),
+    (2, "USM Alger"),
+    (3, "ES Sétif"),
+    (4, "CS Constantine"),
+    (5, "Al Ahly"),
+)
 
 
 def stamp(days: float) -> str:
@@ -30,14 +36,26 @@ def stamp(days: float) -> str:
 
 def event(id, days, home, away, status="NS", score=(None, None), league=LIGUE_1, round=1, time="17:00:00"):
     return {
-        "idEvent": str(id), "strTimestamp": stamp(days), "dateEvent": stamp(days)[:10], "strTime": time,
-        "idLeague": str(league), "strLeague": {LIGUE_1: "Algerian Ligue 1", CAF: "CAF Champions League"}[league],
-        "strLeagueBadge": "https://img/league.png", "strSeason": SEASON, "intRound": str(round),
-        "idHomeTeam": str(home[0]), "strHomeTeam": home[1], "strHomeTeamBadge": f"https://img/{home[0]}.png",
-        "idAwayTeam": str(away[0]), "strAwayTeam": away[1], "strAwayTeamBadge": f"https://img/{away[0]}.png",
+        "idEvent": str(id),
+        "strTimestamp": stamp(days),
+        "dateEvent": stamp(days)[:10],
+        "strTime": time,
+        "idLeague": str(league),
+        "strLeague": {LIGUE_1: "Algerian Ligue 1", CAF: "CAF Champions League"}[league],
+        "strLeagueBadge": "https://img/league.png",
+        "strSeason": SEASON,
+        "intRound": str(round),
+        "idHomeTeam": str(home[0]),
+        "strHomeTeam": home[1],
+        "strHomeTeamBadge": f"https://img/{home[0]}.png",
+        "idAwayTeam": str(away[0]),
+        "strAwayTeam": away[1],
+        "strAwayTeamBadge": f"https://img/{away[0]}.png",
         "intHomeScore": None if score[0] is None else str(score[0]),
         "intAwayScore": None if score[1] is None else str(score[1]),
-        "strStatus": status, "strVenue": "Stade 5 Juillet 1962", "strPostponed": "no",
+        "strStatus": status,
+        "strVenue": "Stade 5 Juillet 1962",
+        "strPostponed": "no",
     }
 
 
@@ -47,8 +65,10 @@ ROUNDS = {
     3: [event(14, -9, ESS, ME, "FT", (0, 2), round=3)],
     # Postponed, then moved to a new date: the round has the new date, "next" still the old one
     4: [event(15, 3, ME, CSC, "NS", round=4)],
-    5: [event(16, 10, MCA, ME, "NS", round=5, time="00:00:00"),  # time not fixed yet
-        event(18, -20, ME, USMA, "PST", round=5)],  # postponed, no new date yet
+    5: [
+        event(16, 10, MCA, ME, "NS", round=5, time="00:00:00"),  # time not fixed yet
+        event(18, -20, ME, USMA, "PST", round=5),
+    ],  # postponed, no new date yet
     6: [event(17, -1, ME, ESS, "NS", round=6)],  # kick-off long past, no result yet
 }
 NEXT = {"events": [event(15, 1, ME, CSC, "PST", round=4)]}
@@ -56,14 +76,33 @@ LAST = {"results": [event(13, -16, AHLY, ME, "FT", (3, 1), league=CAF, round=125
 
 
 def table_row(rank, side, points):
-    return {"intRank": str(rank), "idTeam": str(side[0]), "strTeam": side[1], "strBadge": "https://img/t.png/tiny",
-            "intPlayed": "3", "intWin": "2", "intDraw": "1", "intLoss": "0", "intGoalsFor": "5",
-            "intGoalsAgainst": "2", "intGoalDifference": "3", "intPoints": str(points), "strForm": "WDW",
-            "strDescription": "Promotion - CAF Champions League" if rank == 1 else ""}
+    return {
+        "intRank": str(rank),
+        "idTeam": str(side[0]),
+        "strTeam": side[1],
+        "strBadge": "https://img/t.png/tiny",
+        "intPlayed": "3",
+        "intWin": "2",
+        "intDraw": "1",
+        "intLoss": "0",
+        "intGoalsFor": "5",
+        "intGoalsAgainst": "2",
+        "intGoalDifference": "3",
+        "intPoints": str(points),
+        "strForm": "WDW",
+        "strDescription": "Promotion - CAF Champions League" if rank == 1 else "",
+    }
 
 
-TABLE = {"table": [table_row(1, ME, 7), table_row(2, USMA, 5), table_row(3, MCA, 4), table_row(4, ESS, 4),
-                   table_row(5, CSC, 3)]}
+TABLE = {
+    "table": [
+        table_row(1, ME, 7),
+        table_row(2, USMA, 5),
+        table_row(3, MCA, 4),
+        table_row(4, ESS, 4),
+        table_row(5, CSC, 3),
+    ]
+}
 
 
 class FakeApi:
@@ -126,15 +165,27 @@ def test_page_shows_the_season(client, loaded):
     assert page["nextMatch"]["kickoffConfirmed"] is True
     # Match 17's kick-off is long past without a result: not listed as upcoming.
     # Postponed match 18 comes last, whatever its old date.
-    assert [(m["id"], m["kickoffConfirmed"]) for m in page["upcoming"]] == [(15, True), (16, False), (18, True)]
+    assert [(m["id"], m["kickoffConfirmed"]) for m in page["upcoming"]] == [
+        (15, True),
+        (16, False),
+        (18, True),
+    ]
 
     # The CAF match comes from "last"; another club's match in round 1 isn't CRB's
     assert [(m["id"], m["result"]) for m in page["results"]] == [(14, "W"), (13, "L"), (12, "D"), (11, "W")]
     assert page["results"][1]["round"] is None  # cup round codes aren't match days
 
-    assert page["stats"] == {"played": 4, "wins": 2, "draws": 1, "losses": 1, "goalsFor": 6,
-                             "goalsAgainst": 4, "cleanSheets": 2, "failedToScore": 0,
-                             "form": ["W", "D", "L", "W"]}
+    assert page["stats"] == {
+        "played": 4,
+        "wins": 2,
+        "draws": 1,
+        "losses": 1,
+        "goalsFor": 6,
+        "goalsAgainst": 4,
+        "cleanSheets": 2,
+        "failedToScore": 0,
+        "form": ["W", "D", "L", "W"],
+    }
 
     competitions = {c["id"]: c for c in page["competitions"]}
     assert list(competitions) == [LIGUE_1, CAF]
@@ -143,7 +194,9 @@ def test_page_shows_the_season(client, loaded):
     [table] = competitions[LIGUE_1]["standings"]
     assert table["topOnly"] is True
     assert [(r["rank"], r["team"]["name"], r["isCrb"]) for r in table["rows"]][:2] == [
-        (1, "CR Belouizdad", True), (2, "USM Alger", False)]
+        (1, "CR Belouizdad", True),
+        (2, "USM Alger", False),
+    ]
     assert table["rows"][0]["team"]["logo"] == "https://img/t.png/tiny"  # already a small copy
     assert page["unavailable"] == []
 
@@ -175,8 +228,12 @@ def test_season_switches_in_july():
 def test_refresh_asks_for_every_round_until_an_empty_one(loaded):
     rounds = [r for path, r in loaded.calls if path == "/eventsround.php"]
     assert rounds == [1, 2, 3, 4, 5, 6, 7]  # 7 is empty: the season stops there
-    assert {path for path, _ in loaded.calls} == {"/eventsround.php", "/eventsnext.php", "/eventslast.php",
-                                                   "/lookuptable.php"}
+    assert {path for path, _ in loaded.calls} == {
+        "/eventsround.php",
+        "/eventsnext.php",
+        "/eventslast.php",
+        "/lookuptable.php",
+    }
 
 
 def test_refresh_only_asks_again_for_old_answers(loaded):
@@ -232,12 +289,16 @@ def test_admin_adds_a_ticket_link_that_the_page_shows(client, admin_client, load
 
     # Replacing it, then removing it
     admin_client.put(f"{MATCHES}/15/ticket", json={"url": DIGITICKET + "?v=2"})
-    assert [m["ticketUrl"] for m in admin_client.get(MATCHES).json() if m["id"] == 15] == [DIGITICKET + "?v=2"]
+    assert [m["ticketUrl"] for m in admin_client.get(MATCHES).json() if m["id"] == 15] == [
+        DIGITICKET + "?v=2"
+    ]
     assert admin_client.delete(f"{MATCHES}/15/ticket").status_code == 204
     assert client.get(PAGE).json()["nextMatch"]["ticketUrl"] is None
 
 
-@pytest.mark.parametrize("url", ["http://digiticket.example/x", "javascript:alert(1)", "digiticket.example", "https://"])
+@pytest.mark.parametrize(
+    "url", ["http://digiticket.example/x", "javascript:alert(1)", "digiticket.example", "https://"]
+)
 def test_ticket_link_must_be_an_https_address(admin_client, loaded, url):
     response = admin_client.put(f"{MATCHES}/15/ticket", json={"url": url})
     assert response.status_code == 422

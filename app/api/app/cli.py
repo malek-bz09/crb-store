@@ -1,8 +1,8 @@
 """Command-line tasks.
 
-    uv run python -m app.cli create-admin --email you@shop.dz --name "Your Name" [--role staff]
-    uv run python -m app.cli seed     # add the sample products to an empty catalogue
-    uv run python -m app.cli seed --replace   # delete every other product, add missing sample ones
+uv run python -m app.cli create-admin --email you@shop.dz --name "Your Name" [--role staff]
+uv run python -m app.cli seed     # add the sample products to an empty catalogue
+uv run python -m app.cli seed --replace   # delete every other product, add missing sample ones
 """
 
 import argparse
@@ -18,14 +18,36 @@ from app.services.auth import save_admin
 
 # The shop's starting catalogue; the photos are in app/web/public/
 SAMPLE_PRODUCTS = [
-    ("crb-home-jersey", "CRB Home Jersey 26/27", "tops", "8900", None, 25, "/images.jpeg",
-     "The red home shirt with the white chevron, in a light, breathable match fabric."),
-    ("crb-training-tracksuit", "Training Tracksuit 26/27", "bottoms", "12900", "14900", 12,
-     "/optimize.webp",
-     "Full-zip red jacket and navy tapered pants with red side stripes and the club crest."),
-    ("crb-training-joggers", "Training Joggers – Red", "bottoms", "4900", None, 18,
-     "/crb-training-joggers.jpg",
-     "Tapered fleece joggers with an elastic waist and cuffed ankles."),
+    (
+        "crb-home-jersey",
+        "CRB Home Jersey 26/27",
+        "tops",
+        "8900",
+        None,
+        25,
+        "/crb-home-jersey.jpg",
+        "The red home shirt with the white chevron, in a light, breathable match fabric.",
+    ),
+    (
+        "crb-training-tracksuit",
+        "Training Tracksuit 26/27",
+        "bottoms",
+        "12900",
+        "14900",
+        12,
+        "/crb-tracksuit.webp",
+        "Full-zip red jacket and navy tapered pants with red side stripes and the club crest.",
+    ),
+    (
+        "crb-training-joggers",
+        "Training Joggers – Red",
+        "bottoms",
+        "4900",
+        None,
+        18,
+        "/crb-training-joggers.jpg",
+        "Tapered fleece joggers with an elastic waist and cuffed ankles.",
+    ),
 ]
 
 
@@ -37,8 +59,10 @@ def seed(replace: bool = False) -> None:
     sample_slugs = [slug for slug, *_ in SAMPLE_PRODUCTS]
     with SessionLocal() as db:
         if not replace and db.scalar(select(Product.id).limit(1)) is not None:
-            sys.exit("The catalogue already has products; nothing was added. "
-                     "Use `seed --replace` to swap them for the sample ones.")
+            sys.exit(
+                "The catalogue already has products; nothing was added. "
+                "Use `seed --replace` to swap them for the sample ones."
+            )
         removed = db.execute(
             update(Product)
             .where(Product.deleted_at.is_(None), Product.slug.not_in(sample_slugs))
@@ -49,9 +73,14 @@ def seed(replace: bool = False) -> None:
         new = [row for row in SAMPLE_PRODUCTS if row[0] not in existing]
         db.add_all(
             Product(
-                slug=slug, name=name, category=category, price=Decimal(price),
-                compare_at_price=Decimal(old) if old else None, stock_quantity=stock,
-                description=description, image_url=image,
+                slug=slug,
+                name=name,
+                category=category,
+                price=Decimal(price),
+                compare_at_price=Decimal(old) if old else None,
+                stock_quantity=stock,
+                description=description,
+                image_url=image,
             )
             for slug, name, category, price, old, stock, image, description in new
         )
@@ -78,8 +107,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(prog="python -m app.cli")
     commands = parser.add_subparsers(dest="command", required=True)
     seed_command = commands.add_parser("seed", help="add the sample products to an empty catalogue")
-    seed_command.add_argument("--replace", action="store_true",
-                              help="delete every non-sample product, then add the missing sample ones")
+    seed_command.add_argument(
+        "--replace",
+        action="store_true",
+        help="delete every non-sample product, then add the missing sample ones",
+    )
     new_admin = commands.add_parser("create-admin", help="add an admin account, or reset its password")
     new_admin.add_argument("--email", required=True)
     new_admin.add_argument("--name", required=True)

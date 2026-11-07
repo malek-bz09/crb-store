@@ -4,8 +4,8 @@
   "packageManager": "pnpm@10.28.1",
   "scripts": {
     "dev": "turbo run dev",
-    "api": "turbo run dev --filter=backend",
-    "web": "turbo run dev --filter=ecom-template",
+    "api": "turbo run dev --filter=api",
+    "web": "turbo run dev --filter=web",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test"

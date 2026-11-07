@@ -108,7 +108,9 @@ def test_changing_password_signs_out_old_tokens(client, make_admin):
     old_token = make_token(iat=datetime.now(UTC) - timedelta(minutes=5))
     assert client.get(ME, headers={"Authorization": f"Bearer {old_token}"}).status_code == 200
     with SessionLocal() as db:
-        save_admin(db, email="boss@shop.dz", full_name="Shop Boss", password="a brand new password", role="admin")
+        save_admin(
+            db, email="boss@shop.dz", full_name="Shop Boss", password="a brand new password", role="admin"
+        )
     assert client.get(ME, headers={"Authorization": f"Bearer {old_token}"}).status_code == 401
 
 

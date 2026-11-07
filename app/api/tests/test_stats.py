@@ -7,7 +7,10 @@ STATS = "/api/v1/admin/stats"
 
 def move(admin_client, order_id, *statuses):
     for status in statuses:
-        assert admin_client.patch(f"/api/v1/admin/orders/{order_id}/status", json={"status": status}).status_code == 200
+        assert (
+            admin_client.patch(f"/api/v1/admin/orders/{order_id}/status", json={"status": status}).status_code
+            == 200
+        )
 
 
 def test_empty_shop(admin_client):

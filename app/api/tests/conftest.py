@@ -20,11 +20,11 @@ os.environ["JWT_SECRET_KEY"] = "test-only-secret-key-that-is-long-enough-1234"
 os.environ["FOOTBALL_REFRESH"] = "false"
 
 import pytest  # noqa: E402
-from alembic import command  # noqa: E402
 from alembic.config import Config  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 from sqlalchemy import create_engine, make_url, text  # noqa: E402
 
+from alembic import command  # noqa: E402
 from app.core.rate_limit import RateLimiter  # noqa: E402
 from app.core.security import create_access_token  # noqa: E402
 from app.db.session import SessionLocal, engine  # noqa: E402

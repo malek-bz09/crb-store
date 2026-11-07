@@ -9,6 +9,7 @@ import threading
 import time
 from collections import defaultdict, deque
 from collections.abc import Callable
+from typing import ClassVar
 
 from fastapi import Request
 
@@ -21,7 +22,7 @@ class RateLimiter:
     """Use as a dependency: Depends(RateLimiter("login", lambda: 5))."""
 
     # Shared by every limiter: {(name, ip): times of recent requests}
-    _hits: dict[tuple[str, str], deque[float]] = defaultdict(deque)
+    _hits: ClassVar[dict[tuple[str, str], deque[float]]] = defaultdict(deque)
     _lock = threading.Lock()  # sync routes run in several threads at once
 
     def __init__(self, name: str, limit: Callable[[], int]):
@@ -41,8 +42,9 @@ class RateLimiter:
                 hits.popleft()
             if len(hits) >= self.limit():
                 retry_after = int(hits[0] + WINDOW_SECONDS - now) + 1
-                raise AppError(429, "Too many attempts. Please wait a minute and try again.",
-                               retryAfter=retry_after)
+                raise AppError(
+                    429, "Too many attempts. Please wait a minute and try again.", retryAfter=retry_after
+                )
             hits.append(now)
 
     @classmethod

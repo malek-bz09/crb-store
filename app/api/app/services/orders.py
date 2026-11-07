@@ -74,11 +74,9 @@ def check_order_limits(db: Session, phone: str, units: int) -> None:
         raise AppError(
             422,
             f"You can order up to {settings.max_units_per_order} items at once. "
-            "Please call us for larger orders."
+            "Please call us for larger orders.",
         )
-    pending = db.scalar(
-        select(func.count()).where(Order.customer_phone == phone, Order.status == "pending")
-    )
+    pending = db.scalar(select(func.count()).where(Order.customer_phone == phone, Order.status == "pending"))
     if pending >= settings.max_pending_orders_per_phone:
         raise AppError(
             429, "You already have orders waiting for confirmation. We'll call you shortly about them."
@@ -120,8 +118,11 @@ def place_order(db: Session, data: OrderCreate, idempotency_key: str | None = No
         product.stock_quantity -= quantity  # safe: nobody else can change this row right now
         items.append(
             OrderItem(
-                product_id=product.id, product_name=product.name, unit_price=product.price,
-                quantity=quantity, subtotal=product.price * quantity,
+                product_id=product.id,
+                product_name=product.name,
+                unit_price=product.price,
+                quantity=quantity,
+                subtotal=product.price * quantity,
             )
         )
 
@@ -232,8 +233,14 @@ def search_orders(q: str | None, date_from: date | None, date_to: date | None) -
 
 
 def list_orders(
-    db: Session, *, page: int, size: int, status: str | None = None, q: str | None = None,
-    date_from: date | None = None, date_to: date | None = None,
+    db: Session,
+    *,
+    page: int,
+    size: int,
+    status: str | None = None,
+    q: str | None = None,
+    date_from: date | None = None,
+    date_to: date | None = None,
 ) -> tuple[list[Order], int, dict[str, int]]:
     """One page of orders (newest first), the total, and the count for each status."""
     matching = search_orders(q, date_from, date_to)
@@ -269,8 +276,9 @@ def list_customers(db: Session, *, page: int, size: int, q: str | None = None) -
             orders.c.customer_phone.label("phone"),
             func.count().label("order_count"),
             # Money counts only once delivered, like revenue on the dashboard
-            func.coalesce(func.sum(orders.c.total_amount).filter(orders.c.status == "delivered"), 0)
-            .label("total_spent"),
+            func.coalesce(func.sum(orders.c.total_amount).filter(orders.c.status == "delivered"), 0).label(
+                "total_spent"
+            ),
             func.max(orders.c.created_at).label("last_order_at"),
         )
         .group_by(orders.c.customer_phone)
@@ -291,10 +299,16 @@ def list_customers(db: Session, *, page: int, size: int, q: str | None = None) -
     ).mappings()
     customers = [
         {
-            "id": row["phone"], "full_name": row["customer_name"], "phone": row["phone"],
-            "email": row["customer_email"], "wilaya": row["wilaya"], "commune": row["commune"],
-            "address": row["shipping_address"], "order_count": row["order_count"],
-            "total_spent": row["total_spent"], "last_order_at": row["last_order_at"],
+            "id": row["phone"],
+            "full_name": row["customer_name"],
+            "phone": row["phone"],
+            "email": row["customer_email"],
+            "wilaya": row["wilaya"],
+            "commune": row["commune"],
+            "address": row["shipping_address"],
+            "order_count": row["order_count"],
+            "total_spent": row["total_spent"],
+            "last_order_at": row["last_order_at"],
         }
         for row in rows
     ]

@@ -20,5 +20,5 @@ def health(db: DbSession) -> dict[str, str]:
         db.execute(text("SELECT 1"))
     except SQLAlchemyError:
         logger.exception("Health check could not reach the database")
-        raise AppError(503, "The database is unavailable.")
+        raise AppError(503, "The database is unavailable.") from None
     return {"status": "ok", "database": "ok"}

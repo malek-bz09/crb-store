@@ -77,8 +77,13 @@ def list_orders(
         db, page=page, size=size, status=status, q=q, date_from=date_from, date_to=date_to
     )
     return page_of(
-        OrderSummary, [OrderSummary.of(o) for o in orders], total, page, size,
-        page_type=OrderPage, status_counts=status_counts,
+        OrderSummary,
+        [OrderSummary.of(o) for o in orders],
+        total,
+        page,
+        size,
+        page_type=OrderPage,
+        status_counts=status_counts,
     )
 
 

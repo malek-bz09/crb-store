@@ -106,8 +106,13 @@ class CustomerOut(CamelModel):
 
 def customer_of(order: Order) -> CustomerOut:
     return CustomerOut(
-        full_name=order.customer_name, phone=order.customer_phone, email=order.customer_email,
-        wilaya=order.wilaya, commune=order.commune, address=order.shipping_address, notes=order.notes,
+        full_name=order.customer_name,
+        phone=order.customer_phone,
+        email=order.customer_email,
+        wilaya=order.wilaya,
+        commune=order.commune,
+        address=order.shipping_address,
+        notes=order.notes,
     )
 
 
@@ -120,8 +125,13 @@ class LineOut(CamelModel):
 
 
 def line_of(item: OrderItem) -> dict:
-    return {"id": item.product_id, "name": item.product_name, "price": item.unit_price,
-            "quantity": item.quantity, "subtotal": item.subtotal}
+    return {
+        "id": item.product_id,
+        "name": item.product_name,
+        "price": item.unit_price,
+        "quantity": item.quantity,
+        "subtotal": item.subtotal,
+    }
 
 
 class OrderPlaced(CamelModel):
@@ -140,9 +150,14 @@ class OrderPlaced(CamelModel):
     @classmethod
     def of(cls, order: Order) -> "OrderPlaced":
         return cls(
-            order_number=order.order_number, status=order.status, payment_method=order.payment_method,
-            customer=customer_of(order), lines=[line_of(i) for i in order.items],
-            subtotal=order.subtotal, delivery_fee=order.delivery_fee, total=order.total_amount,
+            order_number=order.order_number,
+            status=order.status,
+            payment_method=order.payment_method,
+            customer=customer_of(order),
+            lines=[line_of(i) for i in order.items],
+            subtotal=order.subtotal,
+            delivery_fee=order.delivery_fee,
+            total=order.total_amount,
             created_at=order.created_at,
         )
 
@@ -164,8 +179,12 @@ class OrderSummary(CamelModel):
     @classmethod
     def of(cls, order: Order) -> "OrderSummary":
         return cls(
-            id=order.id, order_number=order.order_number, status=order.status, created_at=order.created_at,
-            customer=customer_of(order), item_count=sum(i.quantity for i in order.items),
+            id=order.id,
+            order_number=order.order_number,
+            status=order.status,
+            created_at=order.created_at,
+            customer=customer_of(order),
+            item_count=sum(i.quantity for i in order.items),
             total=order.total_amount,
         )
 
@@ -208,11 +227,19 @@ class OrderDetail(CamelModel):
             status: getattr(order, f"{status}_at") for status in ORDER_STATUSES if status != "pending"
         }
         return cls(
-            id=order.id, order_number=order.order_number, status=order.status,
-            next_statuses=list(TRANSITIONS[order.status]), history=history, customer=customer_of(order),
-            lines=[admin_line(i) for i in order.items], subtotal=order.subtotal,
-            delivery_fee=order.delivery_fee, total=order.total_amount, payment_method=order.payment_method,
-            created_at=order.created_at, updated_at=order.updated_at,
+            id=order.id,
+            order_number=order.order_number,
+            status=order.status,
+            next_statuses=list(TRANSITIONS[order.status]),
+            history=history,
+            customer=customer_of(order),
+            lines=[admin_line(i) for i in order.items],
+            subtotal=order.subtotal,
+            delivery_fee=order.delivery_fee,
+            total=order.total_amount,
+            payment_method=order.payment_method,
+            created_at=order.created_at,
+            updated_at=order.updated_at,
         )
 
 

@@ -118,7 +118,15 @@ def test_get_by_id_and_by_slug(client, make_product):
 def test_public_product_hides_admin_fields(client, make_product):
     public = client.get(f"{URL}/{make_product()['id']}").json()
     assert set(public) == {
-        "id", "slug", "name", "description", "category", "price", "compareAtPrice", "stock", "images"
+        "id",
+        "slug",
+        "name",
+        "description",
+        "category",
+        "price",
+        "compareAtPrice",
+        "stock",
+        "images",
     }
 
 

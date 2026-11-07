@@ -1,5 +1,5 @@
 [project]
-name = "underground-backend"
+name = "crb-store-api"
 version = "0.1.0"
 description = "REST API for the CRB store (FastAPI, SQLAlchemy, PostgreSQL)"
 requires-python = ">=3.12"
@@ -20,8 +20,19 @@ dependencies = [
 dev = [
     "httpx2>=2.13.1",
     "pytest>=8.3",
+    "ruff>=0.17.4",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+extend-exclude = ["alembic/versions"]  # generated migrations
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "PIE", "RUF"]
+# E501: the formatter handles line length. RUF001-3: dashes and × in text are intended.
+ignore = ["E501", "RUF001", "RUF002", "RUF003"]

@@ -1,7 +1,6 @@
 """The migrations and the models must describe the same tables."""
 
 from alembic import command
-
 from tests.conftest import alembic_config
 
 

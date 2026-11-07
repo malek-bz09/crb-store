@@ -33,11 +33,23 @@ POSTPONED = {"PST", "Postponed"}
 CANCELLED = {"CANC", "ABD", "Cancelled", "Abandoned"}
 
 STATUS_TEXT = {
-    "NS": "Not started", "TBD": "Time to be confirmed", "FT": "Full time",
-    "AET": "After extra time", "PEN": "After penalties", "AWD": "Awarded", "WO": "Walkover",
-    "PST": "Postponed", "CANC": "Cancelled", "ABD": "Abandoned", "1H": "First half",
-    "HT": "Half time", "2H": "Second half", "ET": "Extra time", "P": "Penalties",
-    "SUSP": "Suspended", "INT": "Interrupted",
+    "NS": "Not started",
+    "TBD": "Time to be confirmed",
+    "FT": "Full time",
+    "AET": "After extra time",
+    "PEN": "After penalties",
+    "AWD": "Awarded",
+    "WO": "Walkover",
+    "PST": "Postponed",
+    "CANC": "Cancelled",
+    "ABD": "Abandoned",
+    "1H": "First half",
+    "HT": "Half time",
+    "2H": "Second half",
+    "ET": "Extra time",
+    "P": "Penalties",
+    "SUSP": "Suspended",
+    "INT": "Interrupted",
 }
 
 # Matches people can still buy tickets for
@@ -117,15 +129,26 @@ def match_of(event: dict, team_id: int, league_id: int, tickets: dict[int, str])
         "kickoff_confirmed": confirmed,
         "status": status,
         "status_text": STATUS_TEXT.get(raw_status, raw_status or "Not started"),
-        "competition": {"id": league or 0, "name": event.get("strLeague") or "Other",
-                        "logo": badge(event.get("strLeagueBadge"))},
+        "competition": {
+            "id": league or 0,
+            "name": event.get("strLeague") or "Other",
+            "logo": badge(event.get("strLeagueBadge")),
+        },
         # Round numbers mean match days in the league; in cups they're codes
         "round": f"Matchday {round_number}" if league == league_id and round_number else None,
         "venue": event.get("strVenue") or None,
-        "home": {"id": number(event["idHomeTeam"]), "name": event["strHomeTeam"],
-                 "logo": badge(event.get("strHomeTeamBadge")), "goals": home_goals},
-        "away": {"id": number(event["idAwayTeam"]), "name": event["strAwayTeam"],
-                 "logo": badge(event.get("strAwayTeamBadge")), "goals": away_goals},
+        "home": {
+            "id": number(event["idHomeTeam"]),
+            "name": event["strHomeTeam"],
+            "logo": badge(event.get("strHomeTeamBadge")),
+            "goals": home_goals,
+        },
+        "away": {
+            "id": number(event["idAwayTeam"]),
+            "name": event["strAwayTeam"],
+            "logo": badge(event.get("strAwayTeamBadge")),
+            "goals": away_goals,
+        },
         "is_home": is_home,
         "result": result,
         "ticket_url": tickets.get(match_id) if status in OPEN_STATUSES else None,
@@ -221,7 +244,8 @@ def still_to_play(matches: list[dict]) -> list[dict]:
     whose kick-off is long past is left out (its result isn't in the data yet)."""
     now = datetime.now(UTC)
     playing = [
-        m for m in matches
+        m
+        for m in matches
         if m["status"] == "live" or (m["status"] == "upcoming" and m["date"] > now - STALE_AFTER)
     ]
     # Postponed matches go last: their old date is meaningless until they're moved
@@ -248,11 +272,13 @@ def overview(db: Session) -> dict:
         standings = []
         if competition_id == settings.crb_league_id and rows:
             standings = [{"name": None, "rows": rows, "top_only": len(rows) <= FREE_TABLE_ROWS}]
-        competition_overviews.append({
-            **competition,
-            "stats": season_stats([m for m in matches if m["competition"]["id"] == competition_id]),
-            "standings": standings,
-        })
+        competition_overviews.append(
+            {
+                **competition,
+                "stats": season_stats([m for m in matches if m["competition"]["id"] == competition_id]),
+                "standings": standings,
+            }
+        )
 
     return {
         "team": team,
@@ -268,6 +294,7 @@ def overview(db: Session) -> dict:
 
 
 # ---------- Ticket links (admin) ----------
+
 
 def open_matches(db: Session) -> list[dict]:
     """Upcoming matches, the ones that can have a ticket link."""

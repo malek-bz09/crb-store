@@ -17,9 +17,17 @@ def products():
 
 def add_old_product():
     with SessionLocal() as db:
-        db.add(Product(slug="old-polo", name="Old Polo", category="tops", price=100,
-                       stock_quantity=1, description="From the previous catalogue.",
-                       image_url="/old-polo.jpg"))
+        db.add(
+            Product(
+                slug="old-polo",
+                name="Old Polo",
+                category="tops",
+                price=100,
+                stock_quantity=1,
+                description="From the previous catalogue.",
+                image_url="/old-polo.jpg",
+            )
+        )
         db.commit()
 
 

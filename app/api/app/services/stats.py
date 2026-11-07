@@ -76,8 +76,14 @@ def dashboard(db: Session) -> dict:
             {"id": p.id, "name": p.name, "image": p.image_url, "stock": p.stock_quantity} for p in low_stock
         ],
         "recent_orders": [
-            {"id": o.id, "order_number": o.order_number, "full_name": o.customer_name,
-             "total": o.total_amount, "status": o.status, "created_at": o.created_at}
+            {
+                "id": o.id,
+                "order_number": o.order_number,
+                "full_name": o.customer_name,
+                "total": o.total_amount,
+                "status": o.status,
+                "created_at": o.created_at,
+            }
             for o in recent
         ],
     }

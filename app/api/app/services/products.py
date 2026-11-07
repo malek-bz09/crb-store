@@ -70,7 +70,7 @@ def get_product_by_slug(db: Session, slug: str) -> Product:
 
 
 def slugify(name: str) -> str:
-    """"Levi's 550 Jeans" → "levis-550-jeans"."""
+    """ "Levi's 550 Jeans" → "levis-550-jeans"."""
     ascii_name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
     return re.sub(r"[^a-z0-9]+", "-", ascii_name.lower().replace("'", "")).strip("-")[:120] or "product"
 

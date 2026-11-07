@@ -14,7 +14,7 @@ cd app/api
 cp .env.example .env                 # then set JWT_SECRET_KEY (the file says how)
 uv run alembic upgrade head          # create the tables
 uv run python -m app.cli seed        # add the sample products
-uv run python -m app.cli seed --replace   # already have the old UNDERGROUND products? swap them for the CRB ones
+uv run python -m app.cli seed --replace   # swap whatever products are there for the sample ones
 uv run python -m app.cli create-admin --email you@shop.dz --name "Your Name"
 ```
 
@@ -35,7 +35,8 @@ API docs (try requests in the browser): http://localhost:8000/docs
 
 ```sh
 pnpm test                # backend tests: need PostgreSQL running; use (and wipe) the shop_test database
-pnpm lint && pnpm build  # frontend
+pnpm lint                # ruff (backend) + eslint (frontend)
+pnpm build               # frontend
 ```
 
 ## How a sale works

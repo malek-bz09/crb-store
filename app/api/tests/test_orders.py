@@ -23,8 +23,13 @@ ADMIN_ORDERS = "/api/v1/admin/orders"
 def add_product(name="Navy Polo", price="8500", stock=5, available=True) -> int:
     with SessionLocal() as db:
         product = Product(
-            name=name, slug=name.lower().replace(" ", "-"), category="tops", price=Decimal(price),
-            stock_quantity=stock, image_url="/p.jpg", is_available=available,
+            name=name,
+            slug=name.lower().replace(" ", "-"),
+            category="tops",
+            price=Decimal(price),
+            stock_quantity=stock,
+            image_url="/p.jpg",
+            is_available=available,
         )
         db.add(product)
         db.commit()
@@ -44,9 +49,15 @@ def order_count() -> int:
 def checkout(items, **customer):
     return {
         "customer": {
-            "fullName": "Amina Benali", "phone": "0555 12 34 56", "email": "amina@example.com",
-            "wilaya": "16", "commune": "Hydra", "address": "12 rue des Oliviers, bât. B", "notes": "",
-        } | customer,
+            "fullName": "Amina Benali",
+            "phone": "0555 12 34 56",
+            "email": "amina@example.com",
+            "wilaya": "16",
+            "commune": "Hydra",
+            "address": "12 rue des Oliviers, bât. B",
+            "notes": "",
+        }
+        | customer,
         "items": [{"id": product_id, "quantity": quantity} for product_id, quantity in items],
     }
 
@@ -229,7 +240,9 @@ def test_same_key_waiting_on_the_lock_gets_the_existing_order():
     with SessionLocal() as first, SessionLocal() as second:
         service.lock_products(first, [polo])  # the first request holds the lock...
         done = []
-        waiting = threading.Thread(target=lambda: done.append(service.place_order(second, data, "same-key-123")))
+        waiting = threading.Thread(
+            target=lambda: done.append(service.place_order(second, data, "same-key-123"))
+        )
         waiting.start()
         time.sleep(0.5)  # give it time to reach lock_products and wait there
         # Same transaction, so the first request can take its own locks again; committing frees them
@@ -287,7 +300,10 @@ def test_order_survives_product_deletion(client, admin_client):
     # Deleting is a soft delete: the line keeps its product and photo, but no shop link
     assert (line["id"], line["slug"], line["image"], line["name"]) == (polo, None, "/p.jpg", "Navy Polo")
     # Cancelling puts the stock back on the (deleted) product
-    assert admin_client.patch(f"{ADMIN_ORDERS}/{order_id}/status", json={"status": "cancelled"}).status_code == 200
+    assert (
+        admin_client.patch(f"{ADMIN_ORDERS}/{order_id}/status", json={"status": "cancelled"}).status_code
+        == 200
+    )
     assert stock_of(polo) == 5
 
 
@@ -343,9 +359,13 @@ def test_unknown_status_is_rejected(admin_client, order):
 
 
 @pytest.mark.parametrize(
-    "path", [["cancelled"], ["confirmed", "processing", "cancelled"],
-             ["confirmed", "processing", "shipped", "returned"],
-             ["confirmed", "processing", "shipped", "delivered", "returned"]]
+    "path",
+    [
+        ["cancelled"],
+        ["confirmed", "processing", "cancelled"],
+        ["confirmed", "processing", "shipped", "returned"],
+        ["confirmed", "processing", "shipped", "delivered", "returned"],
+    ],
 )
 def test_cancelled_and_returned_orders_put_stock_back(admin_client, order, path):
     order_id, polo = order
@@ -410,8 +430,13 @@ def test_list_newest_first_with_counts(admin_client, three_orders):
     assert page["total"] == 3
     assert [o["itemCount"] for o in page["items"]] == [3, 2, 1]
     assert page["statusCounts"] == {
-        "pending": 2, "confirmed": 1, "processing": 0, "shipped": 0, "delivered": 0,
-        "cancelled": 0, "returned": 0,
+        "pending": 2,
+        "confirmed": 1,
+        "processing": 0,
+        "shipped": 0,
+        "delivered": 0,
+        "cancelled": 0,
+        "returned": 0,
     }
 
 
@@ -424,7 +449,12 @@ def test_filter_by_status_keeps_all_counts(admin_client, three_orders):
 @pytest.mark.parametrize(
     ("q", "expected"),
     [
-        ("karim", 1), ("AMINA", 2), ("0555 11", 2), ("+213 555 11", 2), ("karim@example", 1), ("nobody", 0),
+        ("karim", 1),
+        ("AMINA", 2),
+        ("0555 11", 2),
+        ("+213 555 11", 2),
+        ("karim@example", 1),
+        ("nobody", 0),
         ("ORD-55", 0),  # digits in an order number don't match phone numbers
     ],
 )
