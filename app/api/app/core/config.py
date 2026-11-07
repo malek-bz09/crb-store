@@ -1,4 +1,4 @@
-"""App settings, read from environment variables or the backend/.env file.
+"""App settings, read from environment variables or the app/api/.env file.
 
 Every setting can be overridden by an environment variable with the same name in
 capitals, e.g. DATABASE_URL=... uv run uvicorn app.main:app
@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     # Where uploaded product photos are saved
     upload_dir: Path = BACKEND_DIR / "data" / "uploads"
 
-    # Flat home-delivery fee in DZD. Keep in sync with DELIVERY_FEE in frontend/src/services/orders.js
+    # Flat home-delivery fee in DZD. Keep in sync with DELIVERY_FEE in app/web/src/services/orders.js
     delivery_fee: Decimal = Decimal(600)
 
     # Times are stored in UTC; "orders per day" and date filters use the shop's local days

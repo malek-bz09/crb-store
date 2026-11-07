@@ -25,7 +25,7 @@ export default defineConfig({
     babel({ presets: [reactCompilerPreset()] })
   ],
   server: {
-    // Send /api/... requests to the FastAPI backend (see backend/), so the browser
+    // Send /api/... requests to the FastAPI backend (see app/api/), so the browser
     // sees one site and we don't need CORS
     proxy: {
       '/api': process.env.API_URL ?? 'http://localhost:8000',

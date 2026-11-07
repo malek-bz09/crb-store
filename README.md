@@ -1,6 +1,6 @@
 # CRB Store
 
-A store for Chabab Riadhi Belouizdad supporters. React + Vite (with React Compiler) storefront, with a Python FastAPI backend in `backend/`.
+A store for Chabab Riadhi Belouizdad supporters. React + Vite (with React Compiler) storefront, with a Python FastAPI backend in `app/api/`.
 
 ## Run it
 
@@ -10,7 +10,7 @@ First time only:
 
 ```sh
 docker compose up -d                 # PostgreSQL on localhost:5432 (user/password/db: shop)
-cd backend
+cd app/api
 cp .env.example .env                 # then set JWT_SECRET_KEY (the file says how)
 uv run alembic upgrade head          # create the tables
 uv run python -m app.cli seed        # add the sample products
@@ -55,7 +55,7 @@ pending ─► confirmed ─► processing ─► shipped ─► delivered
 ## Products
 
 Add, edit and delete products in **Admin → Products**, including uploading a photo
-(saved in `backend/data/uploads/`). The shop loads products from the backend, so
+(saved in `app/api/data/uploads/`). The shop loads products from the backend, so
 changes show up straight away. Deleting hides a product but keeps it in old orders.
 
 ## CRB Analytics and match tickets
@@ -72,7 +72,7 @@ a couple of minutes; until then the page says the data is still loading.
 
 What the free data doesn't have: the league table stops at the top 5, and CAF and
 cup matches only show up when they're CRB's next or latest match. A paid key
-(`SPORTSDB_API_KEY` in `backend/.env`) gives the full table.
+(`SPORTSDB_API_KEY` in `app/api/.env`) gives the full table.
 
 **Tickets:** in **Admin → Matches**, paste each upcoming match's Digiticket page.
 The CRB page then shows a **Buy tickets** button that opens it. Only admins can
@@ -84,7 +84,7 @@ Sign in at **/admin** with your email. There is no sign-up and no default accoun
 accounts are created on the server:
 
 ```sh
-cd backend
+cd app/api
 uv run python -m app.cli create-admin --email you@shop.dz --name "Your Name"              # admin
 uv run python -m app.cli create-admin --email helper@shop.dz --name "Helper" --role staff # orders only
 ```
@@ -95,7 +95,7 @@ account's name, role and password (and signs it out everywhere).
 ## Data
 
 Everything is stored in PostgreSQL. The connection comes from `DATABASE_URL` in
-`backend/.env`. After pulling changes that touch `backend/alembic/versions/`, run
+`app/api/.env`. After pulling changes that touch `app/api/alembic/versions/`, run
 `uv run alembic upgrade head` again.
 
 To start over: `docker compose down -v` (deletes the data), `docker compose up -d`,

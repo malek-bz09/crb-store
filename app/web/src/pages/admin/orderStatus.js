@@ -1,5 +1,5 @@
 // Order statuses, in the order an order normally moves through them.
-// Keep in sync with ORDER_STATUSES in backend/app/models/order.py, which also
+// Keep in sync with ORDER_STATUSES in app/api/app/models/order.py, which also
 // decides which moves are allowed (TRANSITIONS).
 export const STATUSES = {
   pending: { label: 'Pending', tone: 'warn' },

@@ -1,6 +1,6 @@
 """Algerian delivery details: wilayas and mobile numbers.
 
-Mirrors frontend/src/data/wilayas.js and src/utils/validateCheckout.js: the browser
+Mirrors app/web/src/data/wilayas.js and src/utils/validateCheckout.js: the browser
 checks first for quick feedback, the server checks again because anyone can send a
 request without using our form.
 """

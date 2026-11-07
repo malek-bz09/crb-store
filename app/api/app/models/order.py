@@ -10,7 +10,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.db.base import Base, TimestampMixin, sql_in
 from app.models.order_item import OrderItem
 
-# Keep in sync with STATUSES in frontend/src/pages/admin/orderStatus.js
+# Keep in sync with STATUSES in app/web/src/pages/admin/orderStatus.js
 ORDER_STATUSES = ("pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "returned")
 
 # What each status may change to. Anything else is refused.

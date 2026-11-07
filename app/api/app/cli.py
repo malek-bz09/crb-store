@@ -16,7 +16,7 @@ from app.db.session import SessionLocal
 from app.models.product import Product
 from app.services.auth import save_admin
 
-# The shop's starting catalogue; the photos are in frontend/public/
+# The shop's starting catalogue; the photos are in app/web/public/
 SAMPLE_PRODUCTS = [
     ("crb-home-jersey", "CRB Home Jersey 26/27", "tops", "8900", None, 25, "/images.jpeg",
      "The red home shirt with the white chevron, in a light, breathable match fabric."),

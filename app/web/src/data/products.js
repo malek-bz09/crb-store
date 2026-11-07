@@ -1,6 +1,6 @@
 // Product categories. Products themselves now live in the backend database
 // (manage them in Admin → Products) and are loaded by ProductsProvider.
-// The ids must match CATEGORIES in backend/app/models/product.py; the names and
+// The ids must match CATEGORIES in app/api/app/models/product.py; the names and
 // photos are only shown in the shop.
 export const categories = [
   { id: 'tops', name: 'Jerseys & Tops', image: '/images.jpeg' },

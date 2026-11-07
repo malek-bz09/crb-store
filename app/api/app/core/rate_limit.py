@@ -2,7 +2,7 @@
 
 Counts are kept in this process's memory. That's right for one server process;
 with several processes or servers each keeps its own count, so a shared store
-(e.g. Redis) would be needed then. See backend/README.md.
+(e.g. Redis) would be needed then. See app/api/README.md.
 """
 
 import threading

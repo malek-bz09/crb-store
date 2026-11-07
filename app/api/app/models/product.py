@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base, TimestampMixin, sql_in
 
-# Keep in sync with `categories` in frontend/src/data/products.js
+# Keep in sync with `categories` in app/web/src/data/products.js
 CATEGORIES = ("tops", "bottoms", "hats")
 
 

@@ -9,7 +9,7 @@ export class ApiError extends Error {
   }
 }
 
-// Every backend route lives under /api/v1 (see backend/app/main.py)
+// Every backend route lives under /api/v1 (see app/api/app/main.py)
 const API_PREFIX = '/api/v1'
 
 export async function apiFetch(path, { method = 'GET', body, token, headers: extraHeaders } = {}) {
